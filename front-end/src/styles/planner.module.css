@@ -1,0 +1,128 @@
+#calendar{
+    display: flex;
+    flex-direction: column;
+    margin:32px;
+}
+#calendar_head{
+    display: flex;
+    justify-self: center;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    padding:16px;
+    justify-content: space-between;
+}
+.calendar_day_label_container{
+    margin-top: 32px;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    width: 100%;
+    margin-bottom:16px ;
+}
+.calendar_day_label{
+    flex: 1 1 calc(14.285% - 7px );
+    height: fit-content;
+    max-width:calc(14.285% - 7px ) ;
+    min-width: fit-content;
+    box-sizing: border-box; /* Include padding and border in the element's total size */
+    border: 1px solid #ccc; /* Add border */
+    justify-content: flex-start;
+    flex: 1 1 calc(14.285% -7px);
+    padding: 8px;
+    margin-top:16px ;
+    
+}
+.calendar_body{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 2px;
+}
+.calendar_day{
+    flex: 1 1 calc(14.285% - 7px );
+    height: 128px;
+    max-width:calc(14.285% - 7px ) ;
+    min-width: fit-content;
+    box-sizing: border-box; /* Include padding and border in the element's total size */
+    border: 1px solid #ccc; /* Add border */
+    align-items: center;
+    justify-content: center;
+}
+
+.calendar_date_label{
+    width: fit-content;
+    margin: 0;
+    padding: 8px ;
+}
+
+.calendar_event{
+    align-self: center;
+    background-color: #3498DB;
+    width: 80%;
+    height: 30%;
+    border-radius: 60px;
+    margin: auto;
+    color: white;
+    display: flex; /* Enables Flexbox */
+    align-items: center; /* Vertically centers the text */
+    justify-content: center; /* Horizontally centers the text */
+    text-align: center; /* Optional: centers text if it's multi-line */
+    transition: all .1s ease-in-out;
+}   
+
+.calendar_event:hover{
+    cursor: pointer;
+    background-color: #3290cf;
+}
+
+#background_overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.1); /* Dark semi-transparent overlay */
+    backdrop-filter: blur(2px); /* Apply blur to background */
+    z-index: 999; /* Ensure it appears just below the popup */
+}
+
+#calendar_event_popup{
+    display: flex;
+    flex-direction: column;
+    position: fixed; /* Fixes the popup relative to the viewport */
+    top: 15%; /* 20% from the top of the viewport */
+    left: 10%; /* 10% from the left of the viewport */
+    background-color: white;
+    width: 80%; /* Takes up 80% of the viewport width */
+    height: 75vh; /* Takes up 60% of the viewport height */
+    z-index: 1000; /* Ensures the popup is above other content */
+    border-radius: 8px; /* Optional: Adds rounded corners */
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); /* Optional: Adds a shadow for depth */
+    padding: 16px; /* Adds internal spacing */
+    overflow: auto; /* Ensures content scrolls if it overflows */
+ 
+}
+#popup_close{
+    display: inline-block; /* Makes the element's width fit its content */
+    padding: 5px 10px; /* Control content size inside the circle */
+    border-radius: 50%; /* Makes it a circle */
+    text-align: center; /* Centers the text */
+    white-space: nowrap; /* Prevents line breaks */
+    box-sizing: content-box; /* Makes sure padding doesn't affect the box size */
+    color:red;
+    align-self: flex-end;
+    margin: 0;
+}
+
+#popup_close:hover{
+    cursor: pointer;
+    background-color:rgba(0, 0, 0, 0.3) ;
+}
+
+
+#today{
+    background-color: #3290cf;
+    border-radius: 50%;
+}

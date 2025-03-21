@@ -1,0 +1,257 @@
+.workout_builder{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+.exercise_card {
+    display: flex;
+    flex-direction: column;
+    width: 30%; /* Set width to roughly 1/3 of the parent */
+    height: auto;
+    margin: 16px; /* Adjust spacing between cards */
+    padding-bottom: 16px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    transition: all 0.1s ease-in-out;
+    align-content: center;
+    text-decoration: none;
+    color: black;
+    overflow: hidden; /* Prevent content overflow */
+}
+.exercise_card input[type=number]{
+    
+    font-size: 16px;
+    border: 1px solid grey;
+    width:50%;
+    background: #f1f1f1;
+    align-self: self-end;
+    
+}
+
+
+.card_header{
+    position:sticky;
+    display: flex;
+    text-align: left;
+    padding: 16px;
+}
+#card_buttons{
+    margin-left: auto;
+    align-self: center;
+}
+.card_button{
+margin-left: 16px;
+border-radius: 10px;
+}
+.card_button:hover{
+    cursor: pointer;
+    background-color: #c7cfd5;
+}
+
+.card_body{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.exercise_photo{
+    height: 96px;
+    width:96px ;
+}
+
+.exercise_list{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start; /* Align items to the left */
+    width: 100%;
+}
+.exercise_sets {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    width: fit-content; /* Take up 70% of the parent .exercise_card */
+    margin: auto; /* Ensure centering if needed */
+}
+.set_rep_count{
+
+    margin: 0;
+}
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .exercise_card {
+        width: 45%; /* Two cards per row on medium screens */
+    }
+}
+
+@media (max-width: 768px) {
+    .exercise_card {
+        width: 100%; /* One card per row on small screens */
+    }
+}
+#add_button{
+align-self: center;
+position: sticky;
+width: 80%;
+bottom: 0;
+background-color: #3498DB;
+color: white;
+border-style: none;
+border-radius: 60px;
+padding: .5%;
+margin: auto;
+}
+#add_button:hover{
+    background-color: #3290cf;
+    cursor: pointer;
+}
+
+#background_overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.1); /* Dark semi-transparent overlay */
+    backdrop-filter: blur(2px); /* Apply blur to background */
+    z-index: 999; /* Ensure it appears just below the popup */
+}
+#search_menu{
+    width: 80%;
+    height: 40%;
+    position:fixed;
+    box-shadow: 0px 8px 10px 1px rgba(0,0,0,.14),0px 3px 14px 2px rgba(0,0,0,.12),0px 5px 5px -3px rgba(0,0,0,.2);
+    border-radius: 10px;
+    overflow: scroll;
+    background-color: white;
+    z-index: 2;
+    align-self: center;
+    bottom: 0px;
+    margin-bottom: 48px;
+}
+#search_bar{
+   display: flex;
+   height: fit-content;
+   justify-content: center;
+}
+
+#search_bar input[type=search]{
+    margin-top: 10px;
+    padding: 10px;
+    font-size: 17px;
+    border: 1px solid grey;
+    float: left;
+    width: 60%;
+    background: #f1f1f1;
+}
+#search_button {
+  width: 20%;
+  padding: 10px;
+  background: #2196F3;
+  color: white;
+  font-size: 17px;
+  border: 1px solid grey;
+  border-left: none; /* Prevent double borders */
+  cursor: pointer;
+  margin-top: 10px;
+}
+#search_close{
+    width: fit-content;
+    padding: 5px 10px; /* Control content size inside the circle */
+    border-radius: 50%; /* Makes it a circle */
+    position: absolute;
+    right: 0px;
+    white-space: nowrap; /* Prevents line breaks */
+    color:red;
+    margin: 0;
+}
+
+#search_close:hover{
+    cursor: pointer;
+    background-color:rgba(0, 0, 0, 0.3) ;
+}
+
+.number_input {
+    display: flex;
+    justify-content: center; /* Center content inside */
+    align-items: center; /* Center vertically */
+    width: 100%; /* Ensure it spans the full width of .exercise_sets */
+    border: solid 1.5px black;
+    border-radius: 5px;
+    padding: 0;
+}
+.number_input button {
+    width: 22%;
+    height: 100%;
+    background-color: #3498DB;
+    border: none;
+    cursor: pointer;
+    padding: 0%;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    border-radius: 5px;
+    justify-self: center;
+    align-self: center;
+}
+.number_input input[type=text]{
+    font-size: 16px;
+    border: none;
+    width:50%;
+    background: #f1f1f1;
+    align-self: self-end;
+    text-align: center;
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+.number_input input[type=tel]{
+    font-size: 16px;
+    border: none;
+    width:32px;
+    background: #f1f1f1;
+    align-self: self-end;
+    text-align: center;
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+.error_input{
+    border: solid thin red;
+}
+
+#gen_button{
+        width: 10%;
+        height: fit-content;
+        background-color: #2196F3;
+        border: none;
+        border-radius: 8px;
+}
+
+.button{
+    padding: 10px;
+    background: #2196F3;
+    color: white;
+    font-size: 17px;
+    border: 1px solid grey;
+    border-left: none; /* Prevent double borders */
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.button:hover{
+    background-color: #3290cf;
+    cursor: pointer;
+}
+
+#save_button{
+    width: 80%;
+    align-self: center;
+    justify-self: center;
+}
+.routine_list{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}

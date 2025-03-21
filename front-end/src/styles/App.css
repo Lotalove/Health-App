@@ -1,0 +1,32 @@
+body {
+  font-family: Helvetica,'Courier New', Courier, monospace;
+  text-align: center;
+  color: black;
+  margin:0;   
+}
+
+#navbar{
+  display: flex;
+  justify-content: flex-start;
+  height:72px;
+  width:100%;
+  background-color: #DDE7EF;
+}
+
+.navbar-icon{
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  padding: 4px;
+  border-radius: 8px;
+}
+
+.navbar-icon:hover{
+  cursor: pointer;
+  background-color: #a8afb4;
+}
+#logout_button{
+  align-self:center;
+  margin-left: auto; /* Pushes the button to the right */
+  height: 24px;
+}
