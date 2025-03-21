@@ -1,0 +1,3 @@
+/.gitignore          # General ignores (optional)
+/frontend/.gitignore # Ignores specific frontend files
+/server/.gitignore 
