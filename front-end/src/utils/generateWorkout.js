@@ -8,6 +8,7 @@ export function generateWorkout(settings){
     var muscleGroups = settings.muscle_groups
     var equiptment = settings.equiptment
     
+
     var routine = new Routine([])
     for(let i = 0 ; i< muscleGroups.length;i++){
         var exercises_in_cat = searchByMuscleGroup(muscleGroups[i])
@@ -54,9 +55,11 @@ export function findNewEx(routine,index){
     var IDList = routine.map(exercise=>{return exercise.id})
     var replaced = routine[index]
     var exercises_in_cat = searchByMuscleGroup(replaced.primaryMuscles[0])
-    
+    exercises_in_cat = searchByEquipment([replaced.equipment],exercises_in_cat)
+    console.log(exercises_in_cat)
     exercises_in_cat = exercises_in_cat.filter(exercise=>{return !IDList.includes(exercise.id)})
     var newIndex = getRandomNums(1,exercises_in_cat.length)[0]
+    //console.log("new index: " + newIndex + " vs len of list: " + exercises_in_cat.length)
     exercises_in_cat[newIndex].reps = replaced.reps
     return exercises_in_cat[newIndex]
 }

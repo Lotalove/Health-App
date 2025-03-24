@@ -29,9 +29,9 @@ var exList = searchByEquipment(eq,searchByMuscleGroup(muscle))
 for(let i = 0; i < exList.length;i++){
     if(exList[i].equipment != eq[0]){console.log("equiptment filter error. " + exList[i].equipment +" does not equal " + eq[i])}
 }
-console.log(exList.map(ex=>{if (ex.equipment) return ex.name}))
+// console.log(exList.map(ex=>{if (ex.equipment) return ex.name}))
 // prints unique equipment values in data
-// console.log([...new Set(data.map(ex=>{if (ex.equipment) return ex.equipment}))])
+console.log([...new Set(data.map(ex=>{if (ex.primaryMuscles) return ex.primaryMuscles[0]}))])
 
 //console.log(data.map(ex=>{if (ex.equipment) return ex.equipment}))
 

@@ -171,7 +171,7 @@ function SearchMenu(props){
 }
 
 function GenWorkoutMenu(props){
-    var setting = {"muscle_groups":[],"equiptment":[]}
+    var [settings,updateSettings] = useState({"muscle_groups":[],"equiptment":[]})
     var muscleGroupOpts=['Biceps','Triceps','Shoulders','Back','Chest',"Abdominals","Legs"]
     var equiptmentOpts=[{label:'Body only',group:1},{label:"Full Gym",group:1},{label:"Dumbbell",group:null},{label:"Bands",group:null},{label:"Pull up Bar",group:null}]
     
@@ -179,7 +179,6 @@ function GenWorkoutMenu(props){
     var [displayMode,setDisplayMode] = useState(false)
     const { setAuth } = useAuth();
     const [errorMessage, setErrorMessage] = useState(null)
-    
     async function save(){
         // Sends data to server to be saved to database
         try{
@@ -196,29 +195,47 @@ function GenWorkoutMenu(props){
     
         }
     function generateRoutine(){
-        setRoutine(generateWorkout(setting))
+        setRoutine(generateWorkout(settings))
         setDisplayMode(true);
     }
 
+    // this funtion handles changed to the muscle group
     function handleInputChange(e){    
-        var category = e.target.closest('div').getAttribute("name") 
-        if(e.target.checked){setting[category].push(e.target.name)}
-        else{setting[category].splice(setting[category].indexOf(e.target.name),1)} 
-        console.log(setting.muscle_groups)
+        //if a muscle group is being added 
+        if(e.target.checked){
+            var updatedSettings = {"muscle_groups":[...settings.muscle_groups, e.target.name],"equiptment":settings.equiptment}
+            updateSettings(updatedSettings)
+        }
+        // if it is begin removed
+        else{
+           var updated_muscles = settings.muscle_groups.filter((muscle)=>{return muscle != e.target.name })
+           console.log(updated_muscles)
+            var updatedSettings = {"muscle_groups":updated_muscles,"equiptment":settings.equiptment}
+            updateSettings(updatedSettings)
+        } 
     }
 
     function handleEquipment(e){
         var equip =e.target.name 
-        console.log(e.target.checked)
-        if(equip == 'body only' || equip == 'full gym') setting.equiptment =[equip];
+        var isAdding = e.target.checked
+        if(equip == 'body only' || equip == 'full gym'){
+            var equiptment = isAdding? [equip] : []
+            updateSettings({"muscle_groups":settings.muscle_groups,"equiptment":equiptment})
+        }
         else{
-            //if an exclusive option was previously selected it will be removed 
-            var locationOfExclusive = setting.equiptment.indexOf('none') != -1 ? setting.equiptment.indexOf('none') :setting.equiptment.indexOf('full gym') 
-            if(locationOfExclusive != -1)setting.equiptment.splice(locationOfExclusive,1)
-                //pushes the new equipment in
-                setting.equiptment.push(equip) 
+            
+            // the location of an exclusive equipment option. -1 if none are in the list
+            var locationOfExclusive = settings.equiptment.indexOf('body only') != -1 ? settings.equiptment.indexOf('body only') :settings.equiptment.indexOf('full gym') 
+    
+            var equiptment = [...settings.equiptment]
+            //if an exclusive option was previously selected it will be removed
+            if(locationOfExclusive != -1) {equiptment = settings.equiptment.filter(eq=>{return (eq != 'body only' && eq!= 'full gym')})}
+                if(isAdding) equiptment.push(equip)
+                else{equiptment = equiptment.filter(eq=>{return eq != equip})}
+                updateSettings({"muscle_groups":settings.muscle_groups,"equiptment":equiptment})
             }
     }
+
 
     var form = <div id={styles.search_menu}>
     <div name="muscle_groups" onChange={handleInputChange}>
@@ -227,7 +244,7 @@ function GenWorkoutMenu(props){
             return(
                 <span>
                 <label>{muscle}</label>
-                <input name={muscle.toLowerCase()} type="checkbox"></input>
+                <input name={muscle.toLowerCase()} type="checkbox" checked ={settings.muscle_groups.includes(muscle.toLowerCase())}></input>
                 </span>
             )
         })}
@@ -239,7 +256,7 @@ function GenWorkoutMenu(props){
             return(
                 <span>
                 <label>{eq.label}</label>
-                <input name={eq.label.toLowerCase()} type="checkbox"></input>
+                <input name={eq.label.toLowerCase()} type="checkbox" checked={settings.equiptment.includes(eq.label.toLowerCase())}></input>
                 </span>
             )
         })}
