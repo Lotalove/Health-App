@@ -8,6 +8,7 @@ import account_icon from '../media/icons/user.svg'
 import AuthContext from "../context/Authprovider"
 import { useContext, useEffect } from 'react';
 import { WorkoutViewer } from './WorkoutViewer';
+import { getNextRoutine } from '../utils/getRoutine';
 
 function Block(props){
 
@@ -23,11 +24,9 @@ return(
 
 export function Dashboard (){
     var {auth} = useContext(AuthContext)
-    var TW = auth.routines[0]
-
-   console.log(auth) 
+    var TW = getNextRoutine(auth.routines)
    
-    var todays_workout = <Block title="Todays Workout" content={<WorkoutViewer routine={auth.routines[0]}></WorkoutViewer>}></Block>
+    var todays_workout = <Block title="Next Workout" content={TW?<WorkoutViewer routine={TW}></WorkoutViewer>:<p>No Future Workouts Scheduled</p>}></Block>
     var goal_tracking = <Block title = "Goal Tracking" icon= {data_icon}></Block>
     var calendar = <Block url = "/plan" title='Planner' icon={calendar_icon}></Block>
     var account = <Block title='Account' icon = {account_icon}></Block>
