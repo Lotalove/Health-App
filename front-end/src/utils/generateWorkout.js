@@ -28,7 +28,7 @@ export function generateWorkout(settings){
 
         let indexOfExercies = getRandomNums(numExerises,exercises_in_cat.length)
         for(let j = 0 ;j<indexOfExercies.length;j++){
-            routine.add_exercise(exercises_in_cat[indexOfExercies[j]])
+            routine.addExercise(exercises_in_cat[indexOfExercies[j]])
             routine.setReps(routine.getList().length-1 ,[numReps,numReps,numReps])
         }
     }

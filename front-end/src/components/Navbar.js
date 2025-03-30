@@ -1,16 +1,15 @@
 import homeIcon from '../media/icons/home_icon.svg'
+import account_icon from '../media/icons/user.svg'
 import { useNavigate } from "react-router-dom";
 import { useContext } from 'react';
 import axios from '../api/axios';
 import AuthContext from '../context/Authprovider';
 // styles for the navbar are loacted in ../styles/App.css
 
-
-
 function Icon(props){
     
     return(
-        <div 
+        <div id={props.id?props.id:null}
         className ="navbar-icon"
         onClick={props.clickEvent}
         >
@@ -48,7 +47,8 @@ export function Navbar (){
     return(
         <div id="navbar">
         <Icon clickEvent ={goHome}svg = {homeIcon}></Icon>
-        <p>Welcome {auth.user}!</p>
-        <button onClick={logout} id='logout_button'>Logout</button>
+        
+        <button id='logout_button' onClick={logout} >Logout</button>
+       
         </div>)
 }

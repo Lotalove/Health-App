@@ -99,8 +99,17 @@ function ExerciseCard(props){
 }
 
 function StrengthEditor({ sets, editing, handleSetsChange, changeRepCount }) {
+    
+    // common set/rep ranges will be recommended for quicker planning
+    /* var recommendedSets = (<div>
+        <div className={styles.rec_button}> 3x 10</div> 
+        </div>)
+
+           {editing?recommendedSets:null}
+    */
     return (
         <div className={styles.exercise_sets}>
+        
             <label> Sets</label>
             {editing ? (
                 <SetsInput functions={{ onChange: handleSetsChange }} min="1" max="10" defaultValue={sets?.length || 1} />
@@ -273,7 +282,7 @@ function GenWorkoutMenu(props){
     )
 }
 
-function NewCard({exercise,removeMethod,swapMethod}){
+function ShuffleableCard({exercise,removeMethod,swapMethod}){
   return(
     <div className = {styles.exercise_card}>
     <div className={styles.card_header}>
@@ -319,7 +328,7 @@ function RoutineListView({ routine, setRoutine, save }) {
         <div className={styles.routine_list}>
             {routine.getList().map((exercise, index) => (
 
-                <NewCard key={index} exercise={exercise} removeMethod={() => remove(index)} swapMethod={()=>{swap(index)}}/>
+                <ShuffleableCard key={index} exercise={exercise} removeMethod={() => remove(index)} swapMethod={()=>{swap(index)}}/>
             ))}
             <button id={styles.save_button} onClick={()=>{save()}}>Save</button>
         </div>
@@ -328,32 +337,19 @@ function RoutineListView({ routine, setRoutine, save }) {
 export function WorkoutBuilder(props){
     var [isAdding,setAdding] = useState(false)
     var [isGenerating,setGenerating] = useState(false)
-    var [routine,setRoutine] = useState([])
+    var [routine,setRoutine] = useState(new Routine([]))
     const routineRef=useRef([])
     var [wasUpdated,setUpdated] = useState(false)
     const wasUpdatedRef = useRef(false); // Create a ref to track `wasUpdated`
     const { setAuth } = useAuth();
 
 
-    async function getExercises(routine){
-    const newExercises =routine.exercises.map(id=> searchByID(id)); // Collect all results
-    newExercises.forEach((exercise,index) => {
-        exercise.reps = routine.reps[index]
-    });
-    await setRoutine(newExercises.flat()); // Update state once with all results
-    }
-    
-    // whenver wasUpdated is changed the refrence will be updated as well
     useEffect(() => {
-        wasUpdatedRef.current = wasUpdated;
-        routineRef.current = routine
-      }, [wasUpdated,routine]);
-
-
-    useEffect(() => {
-        // Component did mount logic (if any)
+        // When the component mounts it will have the routine as a list of exercise id's
+        // the getExercise method will get the exercise details
     if (props.routineInfo.routine) getExercises(props.routineInfo.routine)
-
+        
+        // when the component unmounts it will save the changes to the routine if there were any 
     return async ()=>{
         if(wasUpdatedRef.current == true) {
         const response = await axios.post('/updateRoutine',{
@@ -363,34 +359,58 @@ export function WorkoutBuilder(props){
     }
     }
       }, []);
+
+    /*
+    exercises are stored as a list of id's in the database. The below function finds the
+    exercise information using this id.
     
+    The database stores the reps for each exercise in an arary which hold arrays with an int 
+    for each set of the exercises
+    EX: [[10,10,10],[20,15,10]] the first exercise in the routine has 3 sets of 10 reps 
+    */
+    async function getExercises(routine){
+    var newExercises =routine.exercises.map(id=> searchByID(id)); // Collect all results
+    newExercises.forEach((exercise,index) => {
+        exercise.reps = routine.reps[index]
+    });
+    var routineObj = new Routine(newExercises)
+    routineObj.display()
+    await setRoutine(routineObj); // Update state once with all results
+    }
+    
+    // whenver wasUpdated is changed the refrence will be updated as well
+    useEffect(() => {
+        wasUpdatedRef.current = wasUpdated;
+        routineRef.current = routine.getList()
+      }, [wasUpdated,routine]);
+
+
+    //removes exercise at the index specified 
     function remove_exercise(index){
-        var temp = []
-        for(var i = 0 ; i < routine.length ;i++){
-            if( i != index) temp.push(routine[i])
-        }
+        routine.remove_exercise(index)
+        // a new routine obj is made in order to cause an update to front end
+        var newRoutine = new Routine(routine.getList())
         setUpdated(true)
-        setRoutine(temp)
+        setRoutine(newRoutine)
     }
     function add_exercise(exercise){
-        var newRoutine = [...routine,exercise]
+        routine.addExercise(exercise)
+        var newRoutine = new Routine(routine.getList())
         setRoutine(newRoutine)
         setUpdated(true)
     }   
-
+    //this function is used to change the rep or set count of a given exercise
     function updateRoutine(exerciseIndex,newRoutine){
-        console.log(exerciseIndex)
-        var temp = []
-        for(var i = 0 ; i < routineRef.current.length ;i++){
-            if( i != exerciseIndex) temp.push(routine[i])
-            else temp.push(newRoutine)
-        }
-        setRoutine(temp)
+        routine.updateRoutine(exerciseIndex,newRoutine)
+        var newRoutine = new Routine(routine.getList())
+        setRoutine(newRoutine)  
         setUpdated(true)
     }
-    var routine_cards = routine.map((exercise,index)=>{
+   
+    // creates a card for each exercise in the routine
+    var routine_cards = routine?.getList()?routine.getList().map((exercise,index)=>{
       return <ExerciseCard update ={updateRoutine} addFunction={add_exercise} exerciseInfo={exercise} isEditable={true} removeFunction ={()=>{remove_exercise(index)}} index={index} key = {index}/>  
-    })
+    }):null
 
     function closeSearchMenu(){
         setAdding(false)

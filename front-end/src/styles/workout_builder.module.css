@@ -255,3 +255,18 @@ margin: auto;
     flex-wrap: wrap;
     justify-content: center;
 }
+#gen_button{
+    width: fit-content;
+    font-size: 16px;
+}
+.rec_button{
+ font-size: 16px;
+ background-color: #2196F3;
+ border-radius: 5px;
+ padding: 2%;
+ padding-left: 5%;
+ padding-right:5% ;
+ width:max-content;
+ height: 16px;
+ text-align: center;
+}

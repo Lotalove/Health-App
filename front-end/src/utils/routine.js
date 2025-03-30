@@ -21,14 +21,15 @@ class Routine{
     }
 
     // adds an exercises in the format: {}
-    add_exercise(exercise){
+    addExercise(exercise){
+        console.log(this.ex_list)
         var newRoutine = [...this.ex_list,exercise]
         this.setList(newRoutine)
     }
     addExercises(exerciseList,reps){
         for(var i =0; i < exerciseList.length;i++){
             exerciseList[i].reps= reps
-            this.add_exercise(exerciseList[i]);
+            this.addExercise(exerciseList[i]);
         }
     }   
     setReps(index,reps){
@@ -36,7 +37,7 @@ class Routine{
     }
     updateRoutine(exerciseIndex,newRoutine){
         var temp = []
-        for(var i = 0 ; i < this.ex_list ;i++){
+        for(var i = 0 ; i < this.ex_list.length ;i++){
             if( i != exerciseIndex) temp.push(this.ex_list[i])
             else temp.push(newRoutine)
         }
@@ -47,6 +48,10 @@ class Routine{
     swap(index){
         var newEX = findNewEx(this.getList(),index)
         this.ex_list[index] = newEX;
+    }
+
+    display(){
+        this.ex_list.forEach(ex=>{console.log(ex)})
     }
 }
 
