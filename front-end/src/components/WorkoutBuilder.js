@@ -147,7 +147,7 @@ function SearchMenu(props){
     const debounceTimeout = useRef(null);
 
     function handleSearch(){
-        var results = search(search_input.current.value)
+        var results = search(search_input.current.value.toLowerCase())
         setSearchRes(results)
     }
     return(

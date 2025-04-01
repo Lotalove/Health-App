@@ -54,7 +54,7 @@ export function Login(){
             <div>
            
             </div>
-            <label className={styles.formLabel}> Email </label>
+            <label className={styles.formLabel}> Username </label>
             <div>
             <input ref ={user} type="text"></input>
             
