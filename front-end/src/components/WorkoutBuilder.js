@@ -85,7 +85,7 @@ function ExerciseCard(props){
     return(
     <div className = {styles.exercise_card}>
         <div className={styles.card_header}>
-            <p>{props.exerciseInfo.name}</p>
+            <p className={styles.card_title}>{props.exerciseInfo.name}</p>
             {props.isEditable?editable_card_buttons:ineditable_card_buttons}
         </div>
         <div className={styles.card_body}>
@@ -286,7 +286,7 @@ function ShuffleableCard({exercise,removeMethod,swapMethod}){
   return(
     <div className = {styles.exercise_card}>
     <div className={styles.card_header}>
-        <p>{exercise.name}</p>
+        <p className={styles.card_title}> {exercise.name}</p>
         <div id={styles.card_buttons}>
         <img 
             className={styles.card_button}

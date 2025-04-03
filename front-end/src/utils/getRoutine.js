@@ -12,7 +12,6 @@ for(var i =0;i<routines.length;i++){
     
     var routineDay = new Date(routines[i].date); // Convert routine date properly
 
-    console.log(routineDay + ' vs' + todayDate)
     if (routineDay >= todayDate) {
         return routines[i];
     }

@@ -2,11 +2,12 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-}
+}   
 .exercise_card {
     display: flex;
     flex-direction: column;
     width: 30%; /* Set width to roughly 1/3 of the parent */
+    min-width: 200px;
     height: auto;
     margin: 16px; /* Adjust spacing between cards */
     padding-bottom: 16px;
@@ -33,21 +34,32 @@
     position:sticky;
     display: flex;
     text-align: left;
-    padding: 16px;
+    padding: 1%;
+    width: 99%;
 }
 #card_buttons{
+    display: flex;
     margin-left: auto;
-    align-self: center;
+    margin-right: 1%;
+    width: fit-content;
 }
 .card_button{
+align-self: center;
+justify-self: center;
 margin-left: 16px;
 border-radius: 10px;
+
+
 }
 .card_button:hover{
     cursor: pointer;
     background-color: #c7cfd5;
 }
 
+.card_title{
+    margin-left: 1%;
+    width: 60%;
+}
 .card_body{
     display: flex;
     flex-direction: row;
