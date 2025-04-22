@@ -6,9 +6,10 @@ import data_icon from '../media/icons/bar-chart.svg'
 import calendar_icon from '../media/icons/calendar.svg'
 import account_icon from '../media/icons/user.svg'
 import AuthContext from "../context/Authprovider"
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { WorkoutViewer } from './WorkoutViewer';
 import { getNextRoutine } from '../utils/getRoutine';
+import { supabase } from '../api/supabaseClient';
 
 function Block(props){
 
@@ -24,8 +25,25 @@ return(
 
 export function Dashboard (){
     var {auth} = useContext(AuthContext)
-    var TW = getNextRoutine(auth.routines)
-   
+    var [routine,setRoutine] = useState(null)
+    var TW = getNextRoutine(routine)
+    const [fetchError,setFetchError] = useState(null)
+    useEffect(()=>{
+        const fetchRoutines = async ()=>{
+            const {data,error} = await supabase
+            .from("Routines")
+            .select()
+            if(error){setFetchError(error)}
+            if(data){
+                setRoutine(data)
+                console.log(data)
+            }
+        }
+        fetchRoutines()
+    },[])
+
+
+
     var todays_workout = <Block title="Next Workout" content={TW?<WorkoutViewer routine={TW}></WorkoutViewer>:<p>No Future Workouts Scheduled</p>}></Block>
     var goal_tracking = <Block title = "Goal Tracking" icon= {data_icon}></Block>
     var calendar = <Block url = "/plan" title='Planner' icon={calendar_icon}></Block>
@@ -36,6 +54,7 @@ export function Dashboard (){
     return (
         <div>
         <Navbar></Navbar>
+        {fetchError?<p>there was an issue retrieving data</p>:null}
         <div id= {styles.widgets_container}>
         {widgets}
         </div>

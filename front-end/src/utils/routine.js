@@ -1,6 +1,7 @@
 import { findNewEx } from "./generateWorkout"
 
 class Routine{
+    ex_list = []
     constructor(ex_list){
         this.ex_list = ex_list
     }
@@ -10,7 +11,12 @@ class Routine{
     }
 
     getList(){return this.ex_list}
-
+    getExIDList(){
+        return this.ex_list.map((ex)=>{return ex.id})
+    }
+    getRepsList(){
+        return this.ex_list.map((ex)=>{return ex.reps})
+    }
     getNumExercises(){return this.ex_list.length}
     remove_exercise(index){
         var temp = []

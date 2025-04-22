@@ -23,22 +23,17 @@ function Icon(props){
 
 export function Navbar (){
     const navigate = useNavigate(); // useNavigate must be called inside a functional component
-    const {auth,setAuth} = useContext(AuthContext)
+    const {auth,setAuth,signOut} = useContext(AuthContext)
     const goHome = () => {
         navigate('/dashboard'); // Redirect to the '/dashboard' route
     };
 
     async function logout() {
             try {
-                const resp = await axios.post('/logout', {
-                    user:auth.user
-                },
-                {
-                    headers:{'Content-Type':'application/json'},
-                    withCredentials:true
-                });
                 
-                await setAuth({user:null,routines:null,accessToken:null})
+                const response = await signOut()
+                await setAuth(null)
+                navigate('/')
             } catch (error) {
                 console.error('Logout failed:', error.response ? error.response.data : error.message);
                // if(!err?.response)setErrMsg

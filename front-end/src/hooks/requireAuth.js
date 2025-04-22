@@ -4,7 +4,7 @@ import useAuth  from "./useAuth";
 const RequireAuth = ({ children }) => {
   const { auth } = useAuth(); // Assume this hook checks if the user is authenticated
 
-  if (!auth.user) {
+  if (!auth) {
     return <Navigate to="/" replace />;
   }
 

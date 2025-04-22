@@ -4,16 +4,17 @@ import trash_icon from '../media/icons/trash.svg'
 import add_icon from '../media/icons/add.svg'
 import shuffle from '../media/icons/Frame.svg'
 import exercise_photo from '../media/bicep_curl.jpg'
-import {useEffect, useRef, useState } from 'react'
+import {useEffect, useRef, useState,useContext} from 'react'
 import {search,searchByID} from '../utils/json-search'
 import { getExerciseImage } from '../utils/getImages'
 import useAuth from '../hooks/useAuth'
 import SuccessMessage from "./SuccessMessage"
-import axios from '../api/axios'
+import RoutineContext from '../context/RoutineProvider'
 import {SetsInput,RepsInput,DurationInput} from './NumberInput'
 import {getCardioType} from "../utils/getExerciseType.js";
 import { generateWorkout } from '../utils/generateWorkout.js'
 import Routine from '../utils/routine.js'
+import { supabase } from '../api/supabaseClient.js'
 
 function ExerciseCard(props){
     var [editing,setEditing] = useState(props.editing)
@@ -117,7 +118,7 @@ function StrengthEditor({ sets, editing, handleSetsChange, changeRepCount }) {
                 <p>{sets?.length || 1}</p>
             )}
             {sets?.map((rep, index) =>
-                editing ? <RepsInput key={index} min="1" max="100" index={index} functions={{ onChange: changeRepCount }} defaultValue={rep} />
+                editing ? <RepsInput key={index} min={1} max={100} index={index} functions={{ onChange: changeRepCount }} defaultValue={rep} />
                         : <p className = {styles.set_rep_count} key={index}>{rep} reps</p>
             )}
         </div>
@@ -191,10 +192,7 @@ function GenWorkoutMenu(props){
     async function save(){
         // Sends data to server to be saved to database
         try{
-        const response = await axios.post('/updateRoutine',{
-            newRoutine:{routine:routine.getList(),date:props.date}
-            },{withCredentials: true,   headers:{'Content-Type':'application/json'}})
-            setAuth(prev => {return {...prev,routines:response.data.routines}})
+       
         }
         catch (err){
             setErrorMessage("Something went wrong when saving your workout. Try again and if this message appears report to admin")
@@ -341,23 +339,75 @@ export function WorkoutBuilder(props){
     const routineRef=useRef([])
     var [wasUpdated,setUpdated] = useState(false)
     const wasUpdatedRef = useRef(false); // Create a ref to track `wasUpdated`
-    const { setAuth } = useAuth();
+    const { auth } = useAuth();
+    
+    const {addRoutine,updateRoutineLocally,deleteRoutine} = useContext(RoutineContext)
+    
+    async function createRoutine() {
+        
+            console.log(routineRef.current.getExIDList(),routineRef.current.getRepsList())
+            const {data,error} = await supabase
+            .from("Routines")
+            .insert({date:props.date,exercises:routineRef.current.getExIDList(),reps:routineRef.current.getRepsList(),user_id:auth.user.id})
+            .select()
+           
+            if(error) console.log(error)
+            if(data){
+                addRoutine(data[0])
+            }    
+            
 
+    }
 
     useEffect(() => {
         // When the component mounts it will have the routine as a list of exercise id's
         // the getExercise method will get the exercise details
-    if (props.routineInfo.routine) getExercises(props.routineInfo.routine)
+        const getRoutineInfo = async ()=>{
+            if (props.routineInfo.routine) getExercises(props.routineInfo.routine)
+            }
+        
+        getRoutineInfo()
         
         // when the component unmounts it will save the changes to the routine if there were any 
     return async ()=>{
+        
         if(wasUpdatedRef.current == true) {
-        const response = await axios.post('/updateRoutine',{
-        newRoutine:{routine:routineRef.current,index:props.routineInfo.routineIndex,date:props.date}
-        },{withCredentials: true,   headers:{'Content-Type':'application/json'}})
-        setAuth(prev => {return {...prev,routines:response.data.routines}})
+            const isNew = props.routineInfo.routine?false:true // was a routine passed as a prop? then it is not new, Otherwise is new
+            
+            // creates a new row in the Routines database holding this routine
+            if(isNew){
+               await createRoutine()
+            }
+        
+        else if(isNew == false){
+
+           
+            if(routineRef.current.getExIDList().length == 0){
+                
+                const {data,error} = await supabase
+                .from('Routines')
+                .delete()
+                .eq('id',props.routineInfo.routine.id)
+                .select()
+                if(error){alert(error.message)}
+                if(data) {deleteRoutine(props.routineInfo.routine.id)}
+            }
+
+            else{
+                const {data,error} = await supabase
+                .from('Routines')
+                .update({exercises:routineRef.current.getExIDList(),reps:routineRef.current.getRepsList()})
+                .eq('id',props.routineInfo.routine.id)
+                .select()
+                if(error){console.log(error)}
+                if(data) {
+                    updateRoutineLocally(data[0])}
+            }
+
+        }
+        }
     }
-    }
+
       }, []);
 
     /*
@@ -381,14 +431,14 @@ export function WorkoutBuilder(props){
     // whenver wasUpdated is changed the refrence will be updated as well
     useEffect(() => {
         wasUpdatedRef.current = wasUpdated;
-        routineRef.current = routine.getList()
+        routineRef.current = routine
       }, [wasUpdated,routine]);
 
 
     //removes exercise at the index specified 
     function remove_exercise(index){
         routine.remove_exercise(index)
-        // a new routine obj is made in order to cause an update to front end
+        // a new routine obj is made with the same exercises and reps of the old in order to cause an update to front end
         var newRoutine = new Routine(routine.getList())
         setUpdated(true)
         setRoutine(newRoutine)

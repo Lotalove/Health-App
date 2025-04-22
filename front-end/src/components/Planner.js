@@ -2,13 +2,15 @@ import { Navbar } from "./Navbar"
 import styles from '../styles/planner.module.css'
 import arrow_left from '../media/icons/arrow-left.svg'
 import arrow_right from '../media/icons/arrow-right.svg'
-import { useContext, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { WorkoutBuilder } from "./WorkoutBuilder"
 import AuthContext from "../context/Authprovider"
+import RoutineContext from '../context/RoutineProvider'
 
 
 function Day(props){
     var [isSelected,setSelected] = useState(false)
+    
     var event_popup = (
     <div 
     onClick={()=>{setSelected(!isSelected)}} 
@@ -16,6 +18,12 @@ function Day(props){
         Workout
     </div>)
     
+    function closeWorkoutBuilder(){
+        setSelected(false)
+    }
+
+
+
     return(
         <div onClick={()=>{
             if (!isSelected) if(props.date)setSelected(!isSelected)
@@ -32,7 +40,7 @@ function Day(props){
             <p id={styles.popup_close} 
             onClick={()=>{setSelected(!isSelected)}}    
             >X</p>
-            <WorkoutBuilder close ={()=>{setSelected(false)}} date={props.date} routineInfo={props.routineInfo?props.routineInfo:[]}></WorkoutBuilder>
+            <WorkoutBuilder close ={closeWorkoutBuilder} date={props.date} routineInfo={props.routineInfo?props.routineInfo:[]}></WorkoutBuilder>
           </div>
           </div>
         )}
@@ -43,10 +51,19 @@ function Day(props){
 function Calendar(){
 var [view_mode,set_view_mode] = useState('month')
 var [range,setRange] = useState(new Date())
+var [routines,setRoutines] = useState([])
+const [fetchError,setFetchError] = useState(null)
 var month_list = ["January","February","March","April","May","June","July","August","September","October","November","December"]
-var {auth} = useContext(AuthContext)
+var {routines,fetchRoutines} = useContext(RoutineContext)
 
+ useEffect(()=>{
+        fetchRoutines()
+        console.log(routines)
+    },[])
 
+    useEffect(()=>{
+
+    },[routines])
 
 var calendar_head = (
     <div id={styles.calendar_head}>
@@ -75,7 +92,6 @@ var calendar_head = (
 )
 
 function findEventOnDate(date){
-    let routines = auth.routines
     
    let routineDay = date.toISOString().split('T')[0];
    

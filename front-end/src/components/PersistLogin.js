@@ -8,7 +8,7 @@ const PersistLogin = ()=>{
     const [isLoading,setIsLoading] = useState(true)
     const refresh = useRefreshToken()
     const {auth}= useAuth()
-
+    console.log(!auth?"verify token":"dont verify")
     useEffect(()=>{
         const verifyRefreshToken = async ()=>{
             try{
@@ -21,7 +21,7 @@ const PersistLogin = ()=>{
                 setIsLoading(false)
             }
         }
-        !auth?.accessToken? verifyRefreshToken():setIsLoading(false)
+        verifyRefreshToken()
     },[])
 
     useEffect(()=>{
