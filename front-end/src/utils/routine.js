@@ -1,8 +1,7 @@
 import { findNewEx } from "./generateWorkout"
 
 class Routine{
-    ex_list = []
-    constructor(ex_list){
+    constructor(ex_list = []){
         this.ex_list = ex_list
     }
 
@@ -38,6 +37,10 @@ class Routine{
             this.addExercise(exerciseList[i]);
         }
     }   
+
+    removeExercise(index){
+        this.ex_list.splice(index,1)
+    }
     setReps(index,reps){
         this.ex_list[index].reps = reps
     }
@@ -56,6 +59,21 @@ class Routine{
         this.ex_list[index] = newEX;
     }
 
+    equal(routine) {
+        console.log(routine , this)
+        if (!routine || this.getNumExercises() !== routine.getNumExercises()) return false;
+    
+        for (let i = 0; i < this.getNumExercises(); i++) {
+            if (this.getExIDList()[i] !== routine.getExIDList()[i]) return false;
+    
+            for (let j = 0; j < this.getRepsList()[i].length; j++) {
+                if (this.getRepsList()[i][j] !== routine.getRepsList()[i][j]) return false;
+            }
+        }
+    
+        return true;
+    }
+    
     display(){
         this.ex_list.forEach(ex=>{console.log(ex)})
     }

@@ -80,7 +80,7 @@ function ExerciseCard(props){
 
 
     const editorToUse = props.exerciseInfo.category === 'strength'
-    ? <StrengthEditor sets={sets} editing={editing} handleSetsChange={handleSetsChange} changeRepCount={changeRepCount} />
+    ? <StrengthEditor sets={sets} makeSets={makeSets} editing={editing} handleSetsChange={handleSetsChange} changeRepCount={changeRepCount} />
     : <CardioEditor exercise={props.exerciseInfo} sets={sets} editing={editing} changeRepCount={changeRepCount} />;
     //<input key={index} min='1'onChange={(event)=>{changeRepCount(index,event)}} type="number" defaultValue={rep} /> old line 85
     return(
@@ -99,21 +99,30 @@ function ExerciseCard(props){
     )
 }
 
-function StrengthEditor({ sets, editing, handleSetsChange, changeRepCount }) {
-    
+function StrengthEditor({ sets,makeSets, editing, handleSetsChange, changeRepCount }) {
     // common set/rep ranges will be recommended for quicker planning
-    /* var recommendedSets = (<div>
-        <div className={styles.rec_button}> 3x 10</div> 
+
+    /*var recommendedSets = (<div id={styles.set_recs}>
+        <div  onClick={()=>{
+            handleSetsChange(3)
+            changeRepCount(0,10)
+            changeRepCount(1,10)
+            changeRepCount(2,10)
+            makeSets([10,10,10])
+        }} 
+            className={styles.rec_button}> 3x 10</div>
+        <div className={styles.rec_button}> 3x 12</div>
+        <div className={styles.rec_button}> 4x 10</div> 
         </div>)
 
-           {editing?recommendedSets:null}
+         {editing?(recommendedSets):null}
     */
-    return (
-        <div className={styles.exercise_sets}>
-        
+return (
+    <div className={styles.exercise_sets}>
+
             <label> Sets</label>
             {editing ? (
-                <SetsInput functions={{ onChange: handleSetsChange }} min="1" max="10" defaultValue={sets?.length || 1} />
+                <SetsInput functions={{ onChange: handleSetsChange }} min={1} max={10} defaultValue={sets?.length || 1} />
             ) : (
                 <p>{sets?.length || 1}</p>
             )}
@@ -173,7 +182,7 @@ function SearchMenu(props){
         <div className={styles.exercise_list}>
         {search_results!= null?search_results.map((result)=>{
            const exerciseData = { ...result, reps: [1] }; 
-          return (<ExerciseCard update={props.exerciseController.updateRoutine} addFunction = {props.addFunction} exerciseInfo={exerciseData} isEditable={false} editing={true}></ExerciseCard>)
+          return (<ExerciseCard update={props.exerciseController.updateExercise} addFunction = {props.addFunction} exerciseInfo={exerciseData} isEditable={false} editing={true}></ExerciseCard>)
         }):null}
         </div>
     </div>
@@ -332,6 +341,7 @@ function RoutineListView({ routine, setRoutine, save }) {
         </div>
     );
 }
+
 export function WorkoutBuilder(props){
     var [isAdding,setAdding] = useState(false)
     var [isGenerating,setGenerating] = useState(false)
@@ -341,74 +351,68 @@ export function WorkoutBuilder(props){
     const wasUpdatedRef = useRef(false); // Create a ref to track `wasUpdated`
     const { auth } = useAuth();
     
-    const {addRoutine,updateRoutineLocally,deleteRoutine} = useContext(RoutineContext)
+    const {addRoutine,updateRoutineLocally,deleteRoutineLocally} = useContext(RoutineContext)
     
     async function createRoutine() {
-        
-            console.log(routineRef.current.getExIDList(),routineRef.current.getRepsList())
             const {data,error} = await supabase
             .from("Routines")
-            .insert({date:props.date,exercises:routineRef.current.getExIDList(),reps:routineRef.current.getRepsList(),user_id:auth.user.id})
+            .insert(routine)
             .select()
-           
-            if(error) console.log(error)
-            if(data){
-                addRoutine(data[0])
-            }    
-            
-
+            if(error) {console.log(error)}
+            if(data){addRoutine(data[0])}    
     }
 
+    async function deleteRoutine() {
+        const {data,error} = await supabase
+        .from('Routines')
+        .delete()
+        .eq('id',props.routineInfo.routine.id)
+        .select()
+        if(error){alert(error.message)}
+        if(data) {deleteRoutineLocally(props.routineInfo.routine.id)}
+    }
+
+    async function updateRoutine(){
+
+        const {data,error} = await supabase
+        .from('Routines')
+        .update({exercises:routineRef.current.getExIDList(),reps:routineRef.current.getRepsList()})
+        .eq('id',props.routineInfo.routine.id)
+        .select()
+        if(error){console.log(error)}
+        if(data) {
+            updateRoutineLocally(data[0])}
+    }
     useEffect(() => {
-        // When the component mounts it will have the routine as a list of exercise id's
-        // the getExercise method will get the exercise details
-        const getRoutineInfo = async ()=>{
-            if (props.routineInfo.routine) getExercises(props.routineInfo.routine)
+        const getRoutineInfo = async () => {
+            if (props.routineInfo.routine) {
+                getExercises(props.routineInfo.routine);
             }
-        
-        getRoutineInfo()
-        
-        // when the component unmounts it will save the changes to the routine if there were any 
-    return async ()=>{
-        
-        if(wasUpdatedRef.current == true) {
-            const isNew = props.routineInfo.routine?false:true // was a routine passed as a prop? then it is not new, Otherwise is new
-            
-            // creates a new row in the Routines database holding this routine
-            if(isNew){
-               await createRoutine()
-            }
-        
-        else if(isNew == false){
-
-           
-            if(routineRef.current.getExIDList().length == 0){
-                
-                const {data,error} = await supabase
-                .from('Routines')
-                .delete()
-                .eq('id',props.routineInfo.routine.id)
-                .select()
-                if(error){alert(error.message)}
-                if(data) {deleteRoutine(props.routineInfo.routine.id)}
-            }
-
-            else{
-                const {data,error} = await supabase
-                .from('Routines')
-                .update({exercises:routineRef.current.getExIDList(),reps:routineRef.current.getRepsList()})
-                .eq('id',props.routineInfo.routine.id)
-                .select()
-                if(error){console.log(error)}
-                if(data) {
-                    updateRoutineLocally(data[0])}
-            }
-
-        }
-        }
-    }
-
-      }, []);
+        };
+    
+        getRoutineInfo();
+    
+        return () => {
+            const cleanup = async () => {
+                if (wasUpdatedRef.current === true) {
+                    const isNew = props.routineInfo.routine ? false : true;
+    
+                    if (isNew) {
+                        await createRoutine();
+                    } else {
+                        if (routineRef.current.getExIDList().length === 0) {
+                            await deleteRoutine();
+                        } else {
+                            console.log("updating routine")
+                            await updateRoutine();
+                        }
+                    }
+                }
+            };
+    
+            cleanup(); // Run and don't await (it's okay for cleanup to be async internally)
+        };
+    }, []);
 
     /*
     exercises are stored as a list of id's in the database. The below function finds the
@@ -424,7 +428,6 @@ export function WorkoutBuilder(props){
         exercise.reps = routine.reps[index]
     });
     var routineObj = new Routine(newExercises)
-    routineObj.display()
     await setRoutine(routineObj); // Update state once with all results
     }
     
@@ -450,7 +453,7 @@ export function WorkoutBuilder(props){
         setUpdated(true)
     }   
     //this function is used to change the rep or set count of a given exercise
-    function updateRoutine(exerciseIndex,newRoutine){
+    function updateExercise(exerciseIndex,newRoutine){
         routine.updateRoutine(exerciseIndex,newRoutine)
         var newRoutine = new Routine(routine.getList())
         setRoutine(newRoutine)  
@@ -459,7 +462,7 @@ export function WorkoutBuilder(props){
    
     // creates a card for each exercise in the routine
     var routine_cards = routine?.getList()?routine.getList().map((exercise,index)=>{
-      return <ExerciseCard update ={updateRoutine} addFunction={add_exercise} exerciseInfo={exercise} isEditable={true} removeFunction ={()=>{remove_exercise(index)}} index={index} key = {index}/>  
+      return <ExerciseCard update ={updateExercise} addFunction={add_exercise} exerciseInfo={exercise} isEditable={true} removeFunction ={()=>{remove_exercise(index)}} index={index} key = {index}/>  
     }):null
 
     function closeSearchMenu(){
@@ -471,7 +474,7 @@ export function WorkoutBuilder(props){
     <div className={styles.exercise_list}>
    {routine_cards}
    </div>
-   {isAdding?<SearchMenu exerciseController={{updateRoutine:updateRoutine}} closeMenu={closeSearchMenu}addFunction={add_exercise}></SearchMenu>:null}
+   {isAdding?<SearchMenu exerciseController={{updateExercise:updateExercise}} closeMenu={closeSearchMenu}addFunction={add_exercise}></SearchMenu>:null}
    {isGenerating?<GenWorkoutMenu close={()=>{props.close()}} date={props.date} />:null}
    {!isGenerating?<button 
    id={styles.add_button}

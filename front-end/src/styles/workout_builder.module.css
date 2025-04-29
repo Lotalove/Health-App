@@ -6,7 +6,7 @@
 .exercise_card {
     display: flex;
     flex-direction: column;
-    width: 30%; /* Set width to roughly 1/3 of the parent */
+    width: calc(33% - 32px)     ; /* Set width to roughly 1/3 of the parent */
     min-width: 200px;
     height: auto;
     margin: 16px; /* Adjust spacing between cards */
@@ -86,22 +86,44 @@ border-radius: 10px;
     width: fit-content; /* Take up 70% of the parent .exercise_card */
     margin: auto; /* Ensure centering if needed */
 }
-.set_rep_count{
+#set_recs{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    color: white;
+}
+.rec_button{
+    font-size: 13px;
+    background-color: #2196F3;
+    border-radius: 5px;
+    padding: 2%;
+    padding-left: 5%;
+    padding-right:5% ;
+    width:max-content;
+    height: 16px;
+    text-align: center;
+    cursor: pointer;
+    font: none;
+}
 
+.set_rep_count{
     margin: 0;
 }
 /* Responsive Design */
-@media (max-width: 1024px) {
+@media screen and (max-width: 1024px) {
     .exercise_card {
-        width: 45%; /* Two cards per row on medium screens */
+        width: calc(50% - 32px); /* Two cards per row on medium screens */
     }
+
 }
 
-@media (max-width: 768px) {
+@media screen and (max-width: 768px) {
     .exercise_card {
         width: 100%; /* One card per row on small screens */
     }
+ 
 }
+
 #add_button{
 align-self: center;
 position: sticky;
@@ -270,15 +292,4 @@ margin: auto;
 #gen_button{
     width: fit-content;
     font-size: 16px;
-}
-.rec_button{
- font-size: 16px;
- background-color: #2196F3;
- border-radius: 5px;
- padding: 2%;
- padding-left: 5%;
- padding-right:5% ;
- width:max-content;
- height: 16px;
- text-align: center;
 }
