@@ -27,7 +27,6 @@ class Routine{
 
     // adds an exercises in the format: {}
     addExercise(exercise){
-        console.log(this.ex_list)
         var newRoutine = [...this.ex_list,exercise]
         this.setList(newRoutine)
     }
@@ -39,7 +38,7 @@ class Routine{
     }   
 
     removeExercise(index){
-        this.ex_list.splice(index,1)
+            this.ex_list.splice(index, 1);
     }
     setReps(index,reps){
         this.ex_list[index].reps = reps

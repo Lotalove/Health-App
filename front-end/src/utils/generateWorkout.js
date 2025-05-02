@@ -13,7 +13,7 @@ export function generateWorkout(settings){
     for(let i = 0 ; i< muscleGroups.length;i++){
         var exercises_in_cat = searchByMuscleGroup(muscleGroups[i])
         if(equiptment != "full gym") exercises_in_cat = searchByEquipment(equiptment,exercises_in_cat)
-        console.log(exercises_in_cat)
+
         let numExerises = 3
 
         /* if there is not enough exercises or just enough

@@ -14,11 +14,12 @@ import {SetsInput,RepsInput,DurationInput} from './NumberInput'
 import {getCardioType} from "../utils/getExerciseType.js";
 import { generateWorkout } from '../utils/generateWorkout.js'
 import Routine from '../utils/routine.js'
-import { supabase } from '../api/supabaseClient.js'
+
 
 function ExerciseCard({routine, routineRef,setRoutine, wasUpdatedRef,indexOfExercise,exerciseProps}){
     var [exerciseInfo,setExerciseInfo] = useState(indexOfExercise!=null?routine.getList()[indexOfExercise]:exerciseProps)
-    var [editing,setEditing] = useState(indexOfExercise?false:true)
+    var [editing, setEditing] = useState(indexOfExercise != null ? false : true)
+
     var [sets,updateSets] = useState(exerciseInfo.reps)
     var setsRef = useRef(null)
     
@@ -29,11 +30,15 @@ function ExerciseCard({routine, routineRef,setRoutine, wasUpdatedRef,indexOfExer
     wasUpdatedRef.current = true 
 }
 
-    function deleteExercise(){
-        routine.removeExercise(indexOfExercise)
-        setRoutine(new Routine(routine.getList()))
-        routineRef.current = routine
+    function deleteExercise(index){
+        console.log("Deleting exercise at index:", index);
+        routine.remove_exercise(index)
+        // it is necessary to update the routine to a new object to force a rerender
+        var newRoutine = new Routine (routine.getList()) 
+        setRoutine(newRoutine)
         wasUpdatedRef.current = true
+        routineRef.current = newRoutine
+
     }
 
     function handleSetsChange(numSets) {
@@ -132,7 +137,7 @@ function ExerciseCard({routine, routineRef,setRoutine, wasUpdatedRef,indexOfExer
             </div>
         );
     }
-        */
+    */
     
         const editorToUse = exerciseInfo.category === 'strength'
     ? <StrengthEditor />:null
@@ -151,7 +156,7 @@ function ExerciseCard({routine, routineRef,setRoutine, wasUpdatedRef,indexOfExer
     <img 
     className={styles.card_button}
     src={trash_icon}
-    onClick={deleteExercise}
+    onClick={()=>{deleteExercise(indexOfExercise)}}
     />
     </div>
     )
@@ -230,20 +235,24 @@ function GenWorkoutMenu(props){
     
     var [routine,setRoutine] = useState(null)
     var [displayMode,setDisplayMode] = useState(false)
-    const { setAuth } = useAuth();
+    const { auth } = useAuth();
     const [errorMessage, setErrorMessage] = useState(null)
+    const {createRoutine,updateRoutine} = useContext(RoutineContext)
+
     async function save(){
         // Sends data to server to be saved to database
         try{
             /*
             this bit of code will save te new routine to the routines database
             */
+           createRoutine({date:props.date,exercises:routine.getExIDList(),reps:routine.getRepsList(),user_id:auth.user.id})
+           console.log(routine)
         }
         catch (err){
             setErrorMessage("Something went wrong when saving your workout. Try again and if this message appears report to admin")
             return
         }
-            props.close() //closes the workout builder 
+           props.close() //closes the workout builder 
     
         }
     function generateRoutine(){
@@ -320,7 +329,7 @@ function GenWorkoutMenu(props){
     return(
         <div>
         {errorMessage?<p>{errorMessage}</p>:null}
-        {displayMode? <RoutineListView routine = {routine?routine:null}  setRoutine={setRoutine} save={save}/>:form}
+        {displayMode? <RoutineListView routine = {routine?routine:null}  setRoutine={setRoutine} save={save} date={props.date}/>:form}
         </div>
     )
 }
@@ -354,8 +363,8 @@ function ShuffleableCard({exercise,removeMethod,swapMethod}){
   )
 }
 
-function RoutineListView({ routine, setRoutine, save }) {
- 
+function RoutineListView({ routine, setRoutine, save,date }) {
+  
     function remove(index) {
         routine.remove_exercise(index)
         // it is necessary to update the routine to a new object to force a rerender
@@ -455,7 +464,7 @@ export function WorkoutBuilder(props){
     <button id={styles.gen_button} className={styles.button} onClick={()=>{setGenerating(!isGenerating)}}>Generate Routine</button>
     <div className={styles.exercise_list}>
    {routine.getList().map((exercise,index)=>{
-    return <ExerciseCard routine={routine} routineRef={routineRef}  setRoutine ={setRoutine} wasUpdatedRef={wasUpdatedRef} indexOfExercise={index} ></ExerciseCard>
+    return <ExerciseCard key={index + exercise.name} routine={routine} routineRef={routineRef}  setRoutine ={setRoutine} wasUpdatedRef={wasUpdatedRef} indexOfExercise={index} ></ExerciseCard>
     
    })}
    </div>
