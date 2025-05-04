@@ -24,7 +24,6 @@ return(
 
 
 export function Dashboard (){
-    var {auth} = useContext(AuthContext)
     var [routine,setRoutine] = useState(null)
     var TW = getNextRoutine(routine)
     const [fetchError,setFetchError] = useState(null)
@@ -36,7 +35,6 @@ export function Dashboard (){
             if(error){setFetchError(error)}
             if(data){
                 setRoutine(data)
-                console.log(data)
             }
         }
         fetchRoutines()

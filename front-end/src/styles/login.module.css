@@ -23,6 +23,10 @@
 }
 
 .bigButton{
+    align-self: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     height: 64px;
     width: 20vw; 
     background-color: #00A0EC;
@@ -34,7 +38,7 @@
     cursor: pointer;
     background-color: #0096DD;
 }
-.formContainer input[type=text] {
+.formContainer input[type=email] {
     padding: 6px;
     margin: 8px;
     font-size: 17px;

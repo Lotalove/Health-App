@@ -10,6 +10,8 @@ export const AuthProvider = ({ children }) => {
     const signUp = async(email,password) =>{
         const {data,error} = await supabase.auth.signUp({email:email,password:password})
         if(error){return({success:false,error})}
+        if(data.user.aud =='authenticated') return{success:false,error:new Error("Email is already registered")}
+        console.log(data)
         return({success:true,data})
     }
 
@@ -19,10 +21,13 @@ export const AuthProvider = ({ children }) => {
     const signIn = async(email,password)=>{
       
         const {data,error} = await supabase.auth.signInWithPassword({email,password})
-        setAuth(data)
-        console.log("request sent")
-        if(error){return({success:false,error})}
-        return({success:true,data})
+        if(data.user !==null){
+            setAuth(data)
+            return({success:true,data})
+        }
+        if(error){
+            return({success:false,error})}
+        
     }
 
     return (
