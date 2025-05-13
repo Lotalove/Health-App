@@ -6,12 +6,10 @@ const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
     const [auth, setAuth] = useState({});
-
     const signUp = async(email,password) =>{
         const {data,error} = await supabase.auth.signUp({email:email,password:password})
+  
         if(error){return({success:false,error})}
-        if(data.user.aud =='authenticated') return{success:false,error:new Error("Email is already registered")}
-        console.log(data)
         return({success:true,data})
     }
 

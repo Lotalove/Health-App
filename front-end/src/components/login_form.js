@@ -187,7 +187,7 @@ export function Signup(){
         return(
             <div>
                 <p>Please check your email: {email} and confirm your email address. </p>
-                <a>Click here once you have done so. </a>
+                <a>If you dont recieve one it is likely you already have an account click here to <a href='/'>login</a> </a>
             </div>
         )
     }

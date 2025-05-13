@@ -33,7 +33,7 @@ export function Navbar (){
                 
                 const response = await signOut()
                 await setAuth(null)
-                navigate('/')
+                //navigate('/')
             } catch (error) {
                 console.error('Logout failed:', error.response ? error.response.data : error.message);
                // if(!err?.response)setErrMsg

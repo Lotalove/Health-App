@@ -16,40 +16,39 @@
     display: flex;
     flex-direction: row;
     align-items: flex-start;
+    justify-content: space-evenly;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 10px;
-    width: 100%;
+   
     margin-bottom:16px ;
 }
 .calendar_day_label{
     flex: 1 1 calc(14.285% - 7px );
     height: fit-content;
-    max-width:calc(14.285% - 7px ) ;
-    min-width: fit-content;
+
     box-sizing: border-box; /* Include padding and border in the element's total size */
     border: 1px solid #ccc; /* Add border */
     justify-content: flex-start;
-    flex: 1 1 calc(14.285% -7px);
-    padding: 8px;
+    flex: 1 1 calc(14.285% );
+    padding-top: 4px;
+    padding-bottom: 4px;
     margin-top:16px ;
     
 }
-.calendar_body{
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 2px;
+.calendar_body {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr); /* 7 equal-width columns */
+    
 }
 .calendar_day{
-    flex: 1 1 calc(14.285% - 7px );
+    flex: 1 1 calc(14.285% );
     height: 128px;
-    max-width:calc(14.285% - 7px ) ;
-    min-width: fit-content;
     box-sizing: border-box; /* Include padding and border in the element's total size */
     border: 1px solid #ccc; /* Add border */
     align-items: center;
     justify-content: center;
 }
+
 
 .calendar_date_label{
     width: fit-content;
@@ -72,6 +71,19 @@
     transition: all .1s ease-in-out;
 }   
 
+@media (max-width: 768px) {
+    
+.calendar_event{
+ width: 16px;
+ height: 16px;
+ border-radius: 50%;
+ color: transparent;
+} 
+.calendar_day{
+    height: 80px;
+}
+
+}  
 .calendar_event:hover{
     cursor: pointer;
     background-color: #3290cf;
@@ -123,6 +135,7 @@
 
 
 #today{
-    background-color: #3290cf;
+    background-color: slateblue;
     border-radius: 50%;
+    color: white;
 }
