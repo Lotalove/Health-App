@@ -382,7 +382,7 @@ function RoutineListView({ routine, setRoutine, save,date }) {
 
                 <ShuffleableCard key={index} exercise={exercise} removeMethod={() => remove(index)} swapMethod={()=>{swap(index)}}/>
             ))}
-            <button id={styles.save_button} onClick={()=>{save()}}>Save</button>
+            <button className={styles.button} id={styles.save_button} onClick={()=>{save()}}>Save</button>
         </div>
     );
 }

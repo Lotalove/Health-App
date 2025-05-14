@@ -82,7 +82,13 @@
 .calendar_day{
     height: 80px;
 }
-
+  #calendar_event_popup {
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    border-radius: 0 !important;
+    padding: 8px !important;
+  }
 }  
 .calendar_event:hover{
     cursor: pointer;
@@ -114,18 +120,19 @@
     box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); /* Optional: Adds a shadow for depth */
     padding: 16px; /* Adds internal spacing */
     overflow: auto; /* Ensures content scrolls if it overflows */
- 
+    scrollbar-width: none;
 }
 #popup_close{
     display: inline-block; /* Makes the element's width fit its content */
-    padding: 5px 10px; /* Control content size inside the circle */
+ /* Control content size inside the circle */
+    padding: 5px;
     border-radius: 50%; /* Makes it a circle */
     text-align: center; /* Centers the text */
     white-space: nowrap; /* Prevents line breaks */
-    box-sizing: content-box; /* Makes sure padding doesn't affect the box size */
     color:red;
     align-self: flex-end;
-    margin: 0;
+    margin-right: 5%;
+    font-size: large;
 }
 
 #popup_close:hover{
