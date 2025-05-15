@@ -327,7 +327,7 @@ function GenWorkoutMenu(props){
     </div>
   
     return(
-        <div>
+        <div className={styles.routine_list}>
         {errorMessage?<p>{errorMessage}</p>:null}
         {displayMode? <RoutineListView routine = {routine?routine:null}  setRoutine={setRoutine} save={save} date={props.date}/>:form}
         </div>
@@ -377,7 +377,7 @@ function RoutineListView({ routine, setRoutine, save,date }) {
     }
 
     return (
-        <div className={styles.routine_list}>
+        <div className={styles.exercise_list}>
             {routine.getList().map((exercise, index) => (
 
                 <ShuffleableCard key={index} exercise={exercise} removeMethod={() => remove(index)} swapMethod={()=>{swap(index)}}/>
@@ -465,7 +465,6 @@ export function WorkoutBuilder(props){
     <div className={styles.exercise_list}>
    {routine.getList().map((exercise,index)=>{
     return <ExerciseCard key={index + exercise.name} routine={routine} routineRef={routineRef}  setRoutine ={setRoutine} wasUpdatedRef={wasUpdatedRef} indexOfExercise={index} ></ExerciseCard>
-    
    })}
    </div>
    {isAdding?<SearchMenu closeMenu={closeSearchMenu}routine={routine} routineRef={routineRef} setRoutine={setRoutine} wasUpdatedRef={wasUpdatedRef}></SearchMenu>:null}

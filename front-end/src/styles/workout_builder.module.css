@@ -31,7 +31,6 @@
     
 }
 
-
 .card_header{
     position:sticky;
     display: flex;
@@ -79,7 +78,7 @@ border-radius: 10px;
     flex-wrap: wrap;
     justify-content: flex-start; /* Align items to the left */
     width: 100%;
-    overflow-y: auto;
+    overflow-y: scroll;
 }
 .exercise_sets {
     display: flex;
@@ -125,12 +124,9 @@ border-radius: 10px;
         width: 100%; /* One card per row on small screens */
     }
    .workout_builder {
-
     padding: 0; 
     margin: 0;
     border-radius: 0;
-    background-color: white; /* optional: make it opaque */
-    z-index: 999; /* make sure it's above other content */
   }
 }
 
@@ -165,11 +161,12 @@ margin: auto;
     width: 80%;
     height: 80%;
     position:absolute;
+    top: 10%;
+    left: 10%;
     box-shadow: 0px 8px 10px 1px rgba(0,0,0,.14),0px 3px 14px 2px rgba(0,0,0,.12),0px 5px 5px -3px rgba(0,0,0,.2);
     border-radius: 10px;
     overflow: scroll;
     background-color: white;
-    z-index: 2;
     align-self: center;
 }
 #search_bar{
@@ -287,19 +284,19 @@ margin: auto;
 
 #save_button{
     width: 80%;
-    align-self: center;
-    justify-self: center;
+    margin-left: 10%;
     border-radius: 8px;
     margin-bottom: 16px;
 }
-.routine_list{
-    width: 100%;
-    height: 100%;
+.routine_list {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: flex-start; /* Align items to the left */
+    width: 100%;
+    overflow-y: auto;
 }
+
 #gen_button{
     position: absolute;
     top: 0px;
