@@ -87,6 +87,7 @@ border-radius: 10px;
     align-items: center; /* Center vertically */
     width: fit-content; /* Take up 70% of the parent .exercise_card */
     margin: auto; /* Ensure centering if needed */
+   
 }
 #set_recs{
     width: 100%;
@@ -155,7 +156,7 @@ margin: auto;
     height: 100vh;
     background: rgba(0, 0, 0, 0.1); /* Dark semi-transparent overlay */
     backdrop-filter: blur(2px); /* Apply blur to background */
-    z-index: 999; /* Ensure it appears just below the popup */
+    z-index: 1; 
 }
 #search_menu{
     width: 80%;
@@ -294,13 +295,42 @@ margin: auto;
     flex-wrap: wrap;
     justify-content: flex-start; /* Align items to the left */
     width: 100%;
+    height: 100%;
     overflow-y: auto;
+ 
 }
-
+#generatedRoutineList{
+    position:absolute;
+    top: 0;
+    background-color: white;
+    height: 100%;
+     position: relative;
+}
 #gen_button{
     position: absolute;
     top: 0px;
     width: fit-content;
     font-size: 16px;
     
+}
+
+
+input[type=checkbox]
+{
+  /* Double-sized Checkboxes */
+  -ms-transform: scale(1.5); /* IE */
+  -moz-transform: scale(1.5); /* FF */
+  -webkit-transform: scale(1.5); /* Safari and Chrome */
+  -o-transform: scale(1.5); /* Opera */
+  transform: scale(1.5);
+  padding: 10px;
+}
+
+/* Might want to wrap a span around your checkbox text */
+.checkboxtext
+{
+  /* Checkbox text */
+  font-size: 110%;
+  
+  padding: 1%;
 }

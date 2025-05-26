@@ -121,9 +121,9 @@ function ExerciseCard({routine, routineRef,setRoutine, wasUpdatedRef,indexOfExer
             </div>
                   );
     }
-    /*
+    
     function CardioEditor() {
-       const type = getCardioType(exercise)
+       const type = getCardioType(exerciseInfo)
        
         return (
             <div className={styles.exercise_sets}>
@@ -137,10 +137,10 @@ function ExerciseCard({routine, routineRef,setRoutine, wasUpdatedRef,indexOfExer
             </div>
         );
     }
-    */
+
     
         const editorToUse = exerciseInfo.category === 'strength'
-    ? <StrengthEditor />:null
+    ? <StrengthEditor />:<CardioEditor/>
    // : <CardioEditor />;
     
     //set of buttons displayed if card is editable
@@ -246,7 +246,7 @@ function GenWorkoutMenu(props){
             this bit of code will save te new routine to the routines database
             */
            createRoutine({date:props.date,exercises:routine.getExIDList(),reps:routine.getRepsList(),user_id:auth.user.id})
-           console.log(routine)
+           props.setRoutine(new Routine(routine.getList()))
         }
         catch (err){
             setErrorMessage("Something went wrong when saving your workout. Try again and if this message appears report to admin")
@@ -299,14 +299,21 @@ function GenWorkoutMenu(props){
 
 
     var form = <div id={styles.search_menu}>
+                 <div className='menu-header'> 
+               <p 
+               id="popup_close"
+               onClick={()=>{props.close()}}
+               >X</p>
+            </div>
     <div name="muscle_groups" onChange={handleInputChange}>
     <p>Muscle Groups</p>
         {muscleGroupOpts.map((muscle)=>{
             return(
                 <span>
-                <label>{muscle}</label>
+                <label className={styles.checkboxtext}>{muscle}</label>
                 <input name={muscle.toLowerCase()} type="checkbox" checked ={settings.muscle_groups.includes(muscle.toLowerCase())}></input>
                 </span>
+                
             )
         })}
     
@@ -316,20 +323,21 @@ function GenWorkoutMenu(props){
         {equiptmentOpts.map((eq)=>{
             return(
                 <span>
-                <label>{eq.label}</label>
+                <label className={styles.checkboxtext}>{eq.label}</label>
                 <input name={eq.label.toLowerCase()} type="checkbox" checked={settings.equiptment.includes(eq.label.toLowerCase())}></input>
                 </span>
             )
         })}
     
     </div>
-    <button onClick={()=>{generateRoutine()}}>Generate</button>
+    <button className={styles.button} onClick={()=>{generateRoutine()}}>Generate</button>
     </div>
   
     return(
         <div className={styles.routine_list}>
+  
         {errorMessage?<p>{errorMessage}</p>:null}
-        {displayMode? <RoutineListView routine = {routine?routine:null}  setRoutine={setRoutine} save={save} date={props.date}/>:form}
+        {displayMode? <RoutineListView routine = {routine?routine:null}  setRoutine={setRoutine} save={save} date={props.date} close={props.close} />:form}
         </div>
     )
 }
@@ -363,7 +371,7 @@ function ShuffleableCard({exercise,removeMethod,swapMethod}){
   )
 }
 
-function RoutineListView({ routine, setRoutine, save,date }) {
+function RoutineListView({ routine, setRoutine, save,date,close}) {
   
     function remove(index) {
         routine.remove_exercise(index)
@@ -377,7 +385,14 @@ function RoutineListView({ routine, setRoutine, save,date }) {
     }
 
     return (
-        <div className={styles.exercise_list}>
+        <div  id={styles.search_menu} className={styles.exercise_list}>
+        
+              <div className='menu-header'> 
+               <p 
+               id="popup_close"
+               onClick={()=>{close()}}
+               >X</p>
+            </div>
             {routine.getList().map((exercise, index) => (
 
                 <ShuffleableCard key={index} exercise={exercise} removeMethod={() => remove(index)} swapMethod={()=>{swap(index)}}/>
@@ -462,13 +477,15 @@ export function WorkoutBuilder(props){
    return(
     <div className={styles.workout_builder}> 
     <button id={styles.gen_button} className={styles.button} onClick={()=>{setGenerating(!isGenerating)}}>Generate Routine</button>
+    
+    
     <div className={styles.exercise_list}>
    {routine.getList().map((exercise,index)=>{
     return <ExerciseCard key={index + exercise.name} routine={routine} routineRef={routineRef}  setRoutine ={setRoutine} wasUpdatedRef={wasUpdatedRef} indexOfExercise={index} ></ExerciseCard>
    })}
    </div>
+    {isGenerating?<GenWorkoutMenu routine={routine} routineRef={routineRef} setRoutine={setRoutine} close={()=>{setGenerating(false)}} date={props.date} />:null}
    {isAdding?<SearchMenu closeMenu={closeSearchMenu}routine={routine} routineRef={routineRef} setRoutine={setRoutine} wasUpdatedRef={wasUpdatedRef}></SearchMenu>:null}
-   {isGenerating?<GenWorkoutMenu close={()=>{props.close()}} date={props.date} />:null}
      {!isGenerating?<button 
         id={styles.add_button}
         onClick={()=>{

@@ -31,3 +31,21 @@ body {
   margin-left: auto; /* Pushes the button to the right */
   height: 24px;
 }
+#popup_close{
+    margin-right: 16px;
+    background: transparent;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+}
+.menu-header {
+    width: 100%;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: white;
+    display: flex;
+    justify-content: flex-end;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    color:red;
+  }
