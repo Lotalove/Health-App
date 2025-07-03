@@ -8,7 +8,7 @@ const SuccessMessage = (props) => {
     setIsVisible(true);
     setTimeout(() => {
       setIsVisible(false);
-    }, 3000);
+    }, 1000);
   };
 
   return (

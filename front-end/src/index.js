@@ -9,6 +9,7 @@ import { AuthProvider } from './context/Authprovider';
 import { RoutinesProvider } from './context/RoutineProvider';
 import PersistLogin from './components/PersistLogin'
 import RequireAuth  from './hooks/requireAuth';
+import { Tracker } from './components/Tracker';
 import {
   createBrowserRouter,
   RouterProvider
@@ -42,6 +43,14 @@ const router = createBrowserRouter([
           </RequireAuth>
         ),
       },
+      {
+        path: "/track", // Protected tracking route
+        element: (
+          <RequireAuth>
+            <Tracker/>
+          </RequireAuth>
+        ),
+      }
     ],
   },
 ]);

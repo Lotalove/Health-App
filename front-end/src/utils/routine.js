@@ -16,6 +16,12 @@ class Routine{
     getRepsList(){
         return this.ex_list.map((ex)=>{return ex.reps})
     }
+    getWeightList(){
+        return this.ex_list.map((ex)=>{return ex.weights})
+    }
+     getCompletionList(){
+        return this.ex_list.map((ex)=>{return ex.completions})
+    }
     getNumExercises(){return this.ex_list.length}
     remove_exercise(index){
         var temp = []
@@ -42,6 +48,12 @@ class Routine{
     }
     setReps(index,reps){
         this.ex_list[index].reps = reps
+    }
+    setWeight(index,weights){
+        this.ex_list[index].weights = weights
+    }
+    setCompletion(index,status){
+        this.ex_list[index].completions = status
     }
     updateRoutine(exerciseIndex,newRoutine){
         var temp = []

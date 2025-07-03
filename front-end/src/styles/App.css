@@ -9,9 +9,12 @@ body {
 #navbar{
   display: flex;
   justify-content: flex-start;
-  height:72px;
+  height:5%;
   width:100%;
   background-color: #DDE7EF;
+  top: 0;  
+  position: sticky;
+  z-index: 1;
 }
 
 .navbar-icon{
@@ -42,10 +45,28 @@ body {
     width: 100%;
     position: sticky;
     top: 0;
-    z-index: 10;
+    z-index: 0;
     background-color: white;
     display: flex;
     justify-content: flex-end;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
     color:red;
   }
+  
+  select{
+    background-color: white;
+    border: thin solid black;
+    border-radius: 5px;
+    font-family: inherit;
+  }
+
+  #background_overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.1); /* Dark semi-transparent overlay */
+    backdrop-filter: blur(2px); /* Apply blur to background */
+    z-index: 1; /* Ensure it appears just below the popup */
+}

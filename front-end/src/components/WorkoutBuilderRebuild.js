@@ -114,6 +114,7 @@ function ExerciseCard({routine, routineRef,setRoutine, wasUpdatedRef,indexOfExer
                 ) : (
                     <p>{sets?.length || 1}</p>
                 )}
+                <label> Reps</label>
                 {sets?.map((rep, index) =>
                     editing ? <RepsInput key={index} min={1} max={100} index={index} functions={{onChange: changeRepCount}} defaultValue={rep} />
                             : <p className = {styles.set_rep_count} key={index}>{rep} reps</p>
@@ -125,8 +126,10 @@ function ExerciseCard({routine, routineRef,setRoutine, wasUpdatedRef,indexOfExer
     function CardioEditor() {
        const type = getCardioType(exerciseInfo)
        
+       console.log(type)
         return (
             <div className={styles.exercise_sets}>
+               <label>{type=='timed'?'Duration':'Miles'}</label>
                 {sets?.map((rep, index) =>
                     editing ? (
                         type == 'timed'?  <DurationInput key={index} min="0.1" max="100" index={index} functions={{ onChange: changeRepCount }} defaultValue={rep} />: <RepsInput key={index} min="1" max="100" index={index} functions={{ onChange: changeRepCount }} defaultValue={rep} />
@@ -187,7 +190,7 @@ function ExerciseCard({routine, routineRef,setRoutine, wasUpdatedRef,indexOfExer
     )
 }
 
-function SearchMenu({closeMenu,routine,setRoutine,routineRef,wasUpdatedRef}){
+export function SearchMenu({closeMenu,routine,setRoutine,routineRef,wasUpdatedRef}){
     var search_input = useRef(null)
     var [search_results , setSearchRes] = useState(null) 
     const debounceTimeout = useRef(null);
@@ -242,9 +245,7 @@ function GenWorkoutMenu(props){
     async function save(){
         // Sends data to server to be saved to database
         try{
-            /*
-            this bit of code will save te new routine to the routines database
-            */
+        // this bit of code will save te new routine to the routines database
            createRoutine({date:props.date,exercises:routine.getExIDList(),reps:routine.getRepsList(),user_id:auth.user.id})
            props.setRoutine(new Routine(routine.getList()))
         }

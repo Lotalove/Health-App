@@ -31,7 +31,7 @@ export const RoutinesProvider = ({ children }) => {
     console.log("updating the routine")
     const {data,error} = await supabase
     .from('Routines')
-    .update({exercises:updatedRoutine.getExIDList(),reps:updatedRoutine.getRepsList()})
+    .update({exercises:updatedRoutine.getExIDList(),reps:updatedRoutine.getRepsList(),weight_matrix:updatedRoutine.getWeightList(),completion_matrix:updatedRoutine.getCompletionList()})
     .eq('id',id)
     .select()
     if(error){console.log(error)}

@@ -14,7 +14,7 @@ import { supabase } from '../api/supabaseClient';
 function Block(props){
 
 return(
-    <Link to={props.url} className={styles.block}>
+    <Link to={props.url} state={props.state} className={styles.block}>
         <h3 className={styles.block_title}>{props.title}</h3>
         {props.icon?<img className={styles.block_icon} src={props.icon}/> : null}
         {props.content?props.content:null}
@@ -42,7 +42,7 @@ export function Dashboard (){
 
 
 
-    var todays_workout = <Block title="Next Workout" content={TW?<WorkoutViewer routine={TW}></WorkoutViewer>:<p>No Future Workouts Scheduled</p>}></Block>
+    var todays_workout = <Block title="Log Next Workout" url={"/track"}  state ={TW} content={TW?<WorkoutViewer routine={TW}></WorkoutViewer>:<p>No Future Workouts Scheduled, Click to log unschedueld workout</p>}></Block>
     var goal_tracking = <Block title = "Goal Tracking" icon= {data_icon}></Block>
     var calendar = <Block url = "/plan" title='Planner' icon={calendar_icon}></Block>
     var account = <Block title='Account' icon = {account_icon}></Block>
