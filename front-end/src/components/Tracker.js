@@ -2,7 +2,7 @@ import { Navbar } from "./Navbar"
 import styles from '../styles/tracker.module.css'
 import Routine from "../utils/routine"
 import { useState,useEffect,useRef,useContext} from "react"
-import { useLocation } from 'react-router-dom';
+import { resolvePath, useLocation } from 'react-router-dom';
 import {searchByID} from '../utils/json-search'
 import { SearchMenu } from "./WorkoutBuilderRebuild";
 import { getTodaysDate } from "../utils/getDate";
@@ -69,7 +69,10 @@ export function Tracker(props){
 
         const type = getCardioType(props.exercise)
 
-        console.log(type)
+        function deleteExercise(){
+            routine.removeExercise(props.exIndex)
+            setRoutine(new Routine(routine.getList()))      
+        }
         function addSet(){
             var updatedSets= [...sets,1]
             updateSets(updatedSets) 
@@ -106,7 +109,7 @@ return(
         <img 
         className={styles.card_button}
         src={trash_icon}
-        //onClick={()=>{deleteExercise(indexOfExercise)}}
+        onClick={()=>{deleteExercise()}}
         />
         
         </div>
@@ -176,7 +179,7 @@ return(
                     <h4>{ date}</h4>
                 
                 {routine.getList().map((exercise,index)=>{
-                    return <ExerciseTable exIndex = {index} exercise={exercise} name={exercise.name} sets={exercise.reps} completion_matrix={exercise.completions}></ExerciseTable>
+                    return <ExerciseTable exIndex = {index} exercise={exercise} name={exercise.name} sets={exercise.reps} updateRoutine = {setRoutine} completion_matrix={exercise.completions}></ExerciseTable>
                 })}
             </div>
              {isAdding?<SearchMenu closeMenu={closeSearchMenu}routine={routine} routineRef={routineRef} setRoutine={setRoutine} wasUpdatedRef={wasUpdatedRef}></SearchMenu>:null}
