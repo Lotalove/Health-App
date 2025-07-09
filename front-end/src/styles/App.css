@@ -5,19 +5,22 @@ body {
   margin:0;   
   min-width: 200px;
 }
-
+#logo{
+    width:256px
+}
 #navbar{
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-around;
   height:5%;
+  min-height: fit-content;
   width:100%;
-  background-color: #DDE7EF;
   top: 0;  
   position: sticky;
   z-index: 1;
 }
 
 .navbar-icon{
+  margin-left: 16px;
   display: flex;
   flex-direction: column;
   align-self: center;
@@ -32,7 +35,8 @@ body {
 #logout_button{
   align-self:center;
   margin-left: auto; /* Pushes the button to the right */
-  height: 24px;
+  height: fit-content;
+
 }
 #popup_close{
     margin-right: 16px;
@@ -69,4 +73,8 @@ body {
     background: rgba(0, 0, 0, 0.1); /* Dark semi-transparent overlay */
     backdrop-filter: blur(2px); /* Apply blur to background */
     z-index: 1; /* Ensure it appears just below the popup */
+}
+
+button:hover{
+     filter: brightness(.9);
 }

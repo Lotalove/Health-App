@@ -1,0 +1,50 @@
+#logo{
+    width:256px
+}
+#loginButton{
+    display:flex;
+     align-items: center;
+      margin-left:auto;
+      padding-right:5%
+}
+#mainBlock{
+    height: fit-content;
+
+}
+#hook{
+    font-family:Lalezar;
+     font-size:64px;
+     width:80%;
+     margin-left:10%;
+     margin-bottom:0%;
+}
+#subHook{
+    width: 80%;
+    margin-left:10%;
+}
+#features{
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+    margin-left:10%;
+}
+#featureBlock{
+    width :30%;
+}
+.featureBlockTitle{
+    margin: 0;
+}
+.subHeading{
+text-align: left;
+width: 80%;
+margin-left:10%;
+font-size: 48px;
+}
+@media screen and (max-width: 768px) {
+#hook{
+    font-size: 48px;
+}
+#features{
+   flex-direction: column;
+}
+}

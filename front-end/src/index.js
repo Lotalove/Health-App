@@ -10,6 +10,7 @@ import { RoutinesProvider } from './context/RoutineProvider';
 import PersistLogin from './components/PersistLogin'
 import RequireAuth  from './hooks/requireAuth';
 import { Tracker } from './components/Tracker';
+import { HomePage } from './components/HomePage';
 import {
   createBrowserRouter,
   RouterProvider
@@ -21,6 +22,10 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/", // Login route
+        element: <HomePage />,
+      },
+      {
+        path: "/login", // Login route
         element: <Login />,
       },
       {

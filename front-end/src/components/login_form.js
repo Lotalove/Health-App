@@ -54,7 +54,7 @@ export function Login(){
             <div>
             {error.general?<div className={styles.errorMessage}>{error.general}</div>:''}
             </div>
-            <label className={styles.formLabel}> Username </label>
+            <label className={styles.formLabel}> Email </label>
         
             <input ref ={user} type="email"></input>
             {error.username?<div className={styles.errorMessage}>{error.username}</div>:''}

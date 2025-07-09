@@ -1,4 +1,5 @@
 import homeIcon from '../media/icons/home_icon.svg'
+import logo from '../media/icons/Fittest_Logo.jpg'
 import account_icon from '../media/icons/user.svg'
 import { useNavigate } from "react-router-dom";
 import { useContext } from 'react';
@@ -41,6 +42,7 @@ export function Navbar (){
         }
     return(
         <div id="navbar">
+             <img id="logo"  src={logo}/>
         <Icon clickEvent ={goHome}svg = {homeIcon}></Icon>
         
         <button id='logout_button' onClick={logout} >Logout</button>
