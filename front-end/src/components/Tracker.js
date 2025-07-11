@@ -1,7 +1,7 @@
 import { Navbar } from "./Navbar"
 import styles from '../styles/tracker.module.css'
 import Routine from "../utils/routine"
-import { useState,useEffect,useRef,useContext} from "react"
+import { useState,useEffect,useRef,useContext, useReducer} from "react"
 import { resolvePath, useLocation } from 'react-router-dom';
 import {searchByID} from '../utils/json-search'
 import { SearchMenu } from "./WorkoutBuilderRebuild";
@@ -10,6 +10,7 @@ import useAuth from '../hooks/useAuth'
 import RoutineContext from '../context/RoutineProvider'
 import { getCardioType } from "../utils/getExerciseType";
 import trash_icon from '../media/icons/trash.svg'
+import { useNavigate } from "react-router-dom";
 
 export function Tracker(props){
     const { auth } = useAuth();
@@ -23,11 +24,8 @@ export function Tracker(props){
     const wasUpdatedRef = useRef(false); 
     var date = location.state?location.state.date:getTodaysDate() 
     
-    
-    
     async function saveWorkout(){
 
-        //const askoConfirm
         const isNew = location.state ? false : true;
         
         if (isNew) {
@@ -81,6 +79,7 @@ export function Tracker(props){
         function updateSetWeight(index,weight){
             weights[index] =  weight
             routine.setWeight(props.exIndex,weights)
+            console.log("updated weight or duration to: " + weight )
         }
         
         function updateCompletionArr(index,status){
@@ -95,12 +94,24 @@ export function Tracker(props){
         //console.log(props)
         const distTableHeaders = (
                 <tr>
-                        <th>Miles</th>
-                        <th>Time to Complete</th>
+                        <th>Distance (Miles)</th>
+                        <th>Duration</th>
                         <th>Completed?</th>
                     </tr>
         )
 
+        const distTableRows = (sets.map((reps, index)=>{return <tr>
+                        <td><TrackerInput index={index} saved={reps} update={updateReps}/></td>
+                        <td><TimeDurationInput  index={index} saved={weights[index]} update={updateSetWeight}></TimeDurationInput> </td>
+                        <td><input
+                        type="checkbox"
+                        defaultChecked={completedArr[index]}
+                        onClick={(e)=>{
+                            updateCompletionArr(index,e.target.checked)
+                        }}
+                        /> 
+                        </td>
+                        </tr>}))
 return(
     <div className={styles.exTable}>
         <div style={{display:"inline-block",alignSelf:"flex-start",width:"100%"}}>
@@ -124,7 +135,7 @@ return(
                         <th> Mark Complete</th>
                     </tr>
                     }
-                    {sets.map((reps, index)=>{return <tr>
+                    {type == "distance"?distTableRows:sets.map((reps, index)=>{return <tr>
                         <td>{index+1}</td>
                         <td><TrackerInput index={index} saved={reps} update={updateReps}/></td>
                         <td><TrackerInput index={index} saved={weights[index]} update={updateSetWeight}></TrackerInput> </td>
@@ -190,6 +201,7 @@ return(
 }
 
 function Summary({routine}){
+    const navigate = useNavigate();     
     var muscleGroups =new Set()
     routine.forEach(exercise=>{
         muscleGroups.add(exercise.primaryMuscles[0])
@@ -197,9 +209,17 @@ function Summary({routine}){
     
     return(
     <div>
-    
     <div id={styles.workout_summary}>
-        <h2 style={{marginLeft:"8px",textAlign:"left"}}>Workout Summary:</h2>
+        <div style={{ display: "flex", alignItems: "center" }}>
+        <h2 style={{ marginLeft: "8px", textAlign: "left", width: "fit-content" }}>Workout Summary:</h2>
+  <p
+    onClick={() => navigate("/dashboard")}
+    style={{ marginLeft: "auto", cursor: "pointer", marginRight:"8px" }}
+  >
+    {"<-- "} back home
+  </p>
+</div>
+
         <h4>💪:{[... muscleGroups].join(', ')} | ⏱️: 1 hour 22 minutes |⚡: 300 Cals | 🏆:1</h4>
     </div>
      <div id="background_overlay"></div>
@@ -210,7 +230,6 @@ function Summary({routine}){
 function TrackerInput({index, update,saved}){
     var [selectedValue,setSelectedValue] = useState(saved) 
   
- 
     function handleChange(e){
         const newValue = e.target.value;
     // Optionally, validate input (e.g., ensure it's a number)
@@ -223,5 +242,46 @@ function TrackerInput({index, update,saved}){
     }
     return (
        <input className={styles.inputs} value={selectedValue} onChange={handleChange} type="number"></input>
+    )
+}
+export function TimeDurationInput(props) {
+    var timeInSeconds = props.saved?props.saved:0
+    //if a default value for an 
+    const hourRef = useRef(props.saved?Math.floor(props.saved / 3600):0)
+    const minuteRef = useRef(props.saved?Math.floor((props.saved - hourRef.current * 3600) / 60):0)
+    const secondRef = useRef(props.saved?Math.floor((props.saved - (hourRef.current * 3600) - (minuteRef.current*60))):0)
+
+    console.log(props.saved)
+
+    function handleDurationChange(){
+        timeInSeconds = parseInt(hourRef.current.value) *3600 + parseInt(minuteRef.current.value) * 60 + parseInt(secondRef.current.value)
+        props.update(props.index,timeInSeconds)
+        
+    }
+    var hourOptions= []
+    for (var i =0; i <=10;i++){
+        hourOptions.push(<option value={i}>{i}</option>)
+    } 
+
+     var minuteOptions= []
+    for (var i =0; i <=60;i++){
+        minuteOptions.push(<option value={i}>{i}</option>)
+    } 
+    return(
+        <div>
+            <label> Hours</label>
+        <select onChange={handleDurationChange} defaultValue={hourRef.current} ref={hourRef}>
+
+        {hourOptions}
+        </select>
+        <label> Minutes</label>
+        <select  onChange={handleDurationChange}  defaultValue={minuteRef.current} ref={minuteRef}>
+           {minuteOptions}
+        </select>
+          <label> Seconds</label>
+        <select  onChange={handleDurationChange} defaultValue={secondRef.current} ref={secondRef}>
+           {minuteOptions}
+        </select>
+        </div>
     )
 }
