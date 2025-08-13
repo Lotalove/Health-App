@@ -15,6 +15,7 @@ import {
   createBrowserRouter,
   RouterProvider
 } from "react-router-dom";
+import GoalTracking from './components/Goals';
 
 const router = createBrowserRouter([
   {
@@ -45,6 +46,14 @@ const router = createBrowserRouter([
         element: (
           <RequireAuth>
             <Planner />
+          </RequireAuth>
+        ),
+      },
+        {
+        path: "/goals", // Protected plan route
+        element: (
+          <RequireAuth>
+            <GoalTracking />
           </RequireAuth>
         ),
       },
