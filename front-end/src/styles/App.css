@@ -6,8 +6,10 @@ body {
   min-width: 200px;
 }
 #logo{
-    width:256px
-}
+    width:256px;
+    cursor: pointer;
+  }
+
 #navbar{
   display: flex;
   justify-content: space-around;

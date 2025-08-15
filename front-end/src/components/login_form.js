@@ -3,6 +3,7 @@ import AuthContext from "../context/Authprovider"
 import { useContext, useRef,useEffect, useState} from 'react';
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from './loading';
+import logo from '../media/icons/Fittest_Logo.jpg'
 
 export function Login(){
     const {auth,signIn} = useContext(AuthContext)
@@ -50,7 +51,10 @@ export function Login(){
     return(
         <div id={styles.page}>
         <div className={styles.formContainer}>  
-
+             <img
+                 id={styles.logo}
+                 src={logo}
+                 />
             <div>
             {error.general?<div className={styles.errorMessage}>{error.general}</div>:''}
             </div>

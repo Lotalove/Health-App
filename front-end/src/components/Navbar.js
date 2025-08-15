@@ -42,9 +42,12 @@ export function Navbar (){
         }
     return(
         <div id="navbar">
-             <img id="logo"  src={logo}/>
-        <Icon clickEvent ={goHome}svg = {homeIcon}></Icon>
-        
+             <img 
+                id="logo"
+                src={logo}
+                onClick={goHome}
+                />
+
         <button id='logout_button' onClick={logout} >Logout</button>
        
         </div>)
