@@ -5,9 +5,9 @@
     font-family: sans-serif;
 }
 
-.create-btn {
+.create_btn {
     align-self: flex-start;
-    background-color: #009fe3;
+    background-color: #0072DD;
     color: white;
     padding: 10px 16px;
     border: none;
@@ -16,7 +16,7 @@
     cursor: pointer;
 }
 
-.create-btn .plus {
+.create_btn .plus {
     font-weight: bold;
     font-size: 20px;
     margin-left: 6px;
@@ -33,7 +33,7 @@
     background-color: white;
 }
 
-.form-group {
+.form_group {
   display: flex;
   justify-content: space-between;
   margin-bottom: 16px;
@@ -67,7 +67,7 @@ input, select {
 }
 
 .save {
-  background-color: #009fe3;
+  background-color: #0072DD;
   color: white;
   border: none;
   padding: 10px 26px;
@@ -76,17 +76,24 @@ input, select {
   cursor: pointer;
 }
 
-.goal-card{
+.goal_card{
     margin-top: 16px;
     width: 90%;
     border-radius: 6px;
     box-shadow: 0 3px 6px rgba(0,0,0,0.1);
     align-self: center;
+    ;
 }
-
-#goal-progress-input{
+.goal_card_header {
+    display: flex;
+    justify-content: space-between;
+    padding: 16px;
+    color: #0072DD;
+    border-radius: 6px 6px 0 0;
+}
+#goal_progress-input{
     margin-top: 16px;
 }
-.goal-progress-button{
+.goal_progress-button{
   margin-left: 16px;
 }

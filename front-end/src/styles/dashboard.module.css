@@ -1,4 +1,5 @@
 .block{
+   background-color: #FFFFFF;
     display: flex;
     flex: 1 1 auto;
     flex-basis: calc(33.333% - 64px);

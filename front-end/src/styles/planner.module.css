@@ -2,6 +2,7 @@
     display: flex;
     flex-direction: column;
     margin:32px;
+     background-color: #FFFFFF;
 }
 #calendar_head{
     display: flex;
@@ -58,7 +59,7 @@
 
 .calendar_event{
     align-self: center;
-    background-color: #3498DB;
+    background-color: #0072DD;
     width: 80%;
     height: 30%;
     border-radius: 60px;
@@ -92,7 +93,7 @@
 }  
 .calendar_event:hover{
     cursor: pointer;
-    background-color: #3290cf;
+    background-color: #0072DD;
 }
 
 #background_overlay {

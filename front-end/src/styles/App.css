@@ -4,6 +4,8 @@ body {
   color: black;
   margin:0;   
   min-width: 200px;
+  width: 100%;
+  background-color: #F8F8F8;
 }
 #logo{
     width:256px;
@@ -15,10 +17,10 @@ body {
   justify-content: space-around;
   height:5%;
   min-height: fit-content;
-  width:100%;
   top: 0;  
   position: sticky;
   z-index: 1;
+  background-color: #FFFFFF;
 }
 
 .navbar-icon{
@@ -38,7 +40,7 @@ body {
   align-self:center;
   margin-left: auto; /* Pushes the button to the right */
   height: fit-content;
-
+  background-color: #0072DD;
 }
 #popup_close{
     margin-right: 16px;
