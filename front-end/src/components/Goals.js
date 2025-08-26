@@ -3,7 +3,11 @@ import { supabase } from "../api/supabaseClient";
 import { Navbar } from "./Navbar"
 import styles from '../styles/Goals.module.css';
 import ChevronDown from '../media/icons/arrow_drop_down.svg'
-import { LineChart, Tooltip,Line, CartesianGrid, XAxis, YAxis, ReferenceLine,ResponsiveContainer } from 'recharts';
+import Trash from '../media/icons/trash.svg' 
+import { LineChart, Tooltip,Line, CartesianGrid, XAxis, 
+  YAxis, ReferenceLine,ResponsiveContainer } from 'recharts';
+import StatusPuck from './ErrorPuck';
+
 
 function GoalTracking (){
   const [targetDate, setTargetDate] = useState('');
@@ -11,7 +15,7 @@ function GoalTracking (){
   const [targetWeight, setTargetWeight] = useState('');
   const [Goals, setGoals] = useState([]);
   const [isPlanning, setIsPlanning] = useState(false);
-
+  
   useEffect(() => {
     const fetchGoals = async () => {
       const { data, error } = await supabase
@@ -43,7 +47,7 @@ function GoalTracking (){
     };
   
     const {data,error} = await supabase.from('Goals').insert(plan).select()
-    if(error) {console.log(error)}
+    if(error) {console.log('Error creating goal:', error);}
     if(data){
       data[0].Goal_Progress = [{
         timeStamp: new Date().toISOString(),
@@ -59,15 +63,23 @@ function GoalTracking (){
       unit:"lbs"
     }).select()
       if (progressError) {
-        console.error('Error saving weight:', progressError);
+        console.error('Error saving initial weight:', progressError);
       } else {
-        console.log('Weight saved successfully:', progressData);
-        // Optionally, you can update the chart data or state here
-      }
+        console.log('Initial weight saved:', progressData);
+        }
 
   }
 
+  async function deleteGoal(goal) {
+  const { data, error } = await supabase.from('Goals').delete().eq('id', goal.id);
+  if (error) {console.log('Error deleting goal:', error);}
+  else {
+    console.log('Goal deleted successfully:', data);
+    setGoals((Goals) => Goals.filter((g) => g.id !== goal.id));
+  }
+}
    var form = (  <div className={styles.modal}>
+
         <form className={styles.form} onSubmit={handleSubmit}>
           <div className={styles.form_group}>
             <label htmlFor="goal">Goal(s):</label>
@@ -125,12 +137,13 @@ function GoalTracking (){
       <button className={styles.create_btn} onClick={() => setIsPlanning(!isPlanning)}>
         Create Plan <span className={styles.plus}>+</span>
       </button>
+
       {isPlanning?
     form:null
       }
        {Goals.length > 0 ? Goals.map((goal, index) => {
         return (
-          <GoalCard key={index} goal={goal} />
+          <GoalCard key={index} goal={goal} deleteGoal={()=>{deleteGoal(goal)}}/>
         );
        }):null}
     </div>
@@ -140,7 +153,7 @@ function GoalTracking (){
 
 export default GoalTracking;
 
-function GoalCard({ goal }) {
+function GoalCard({goal, deleteGoal}) {
   const [isOpen, setIsOpen] = useState(false);
   const [weightHistory, setWeightHistory] = useState(goal.Goal_Progress);
   const weightRef = useRef(null);
@@ -162,6 +175,8 @@ function GoalCard({ goal }) {
       }
   
 } 
+
+
   function MyChart () {
   if(weightHistory.length===0){return <p>No data to display</p>}
   else{
@@ -215,6 +230,10 @@ function GoalCard({ goal }) {
       <div className={styles.goal_card_header}>
         
       <h3 className={styles.goal_title}>Goal: {goal.title}</h3>
+      <img src={Trash} 
+      className={styles.trash_icon}
+      onClick={deleteGoal}
+      />
       </div>
       <p> <b>Deadline:</b> {new Date(goal.deadline).toISOString().split('T')[0]}</p>
       <p> <b>Current Value:</b> {goal.current_value}</p>
