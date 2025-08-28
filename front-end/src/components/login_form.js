@@ -94,7 +94,7 @@ export default function GoogleLoginButton() {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: '/dashboard', // optional: where to go after login
+        redirectTo: `${window.location.origin}/dashboard`, // optional: where to go after login
       },
     });
 
