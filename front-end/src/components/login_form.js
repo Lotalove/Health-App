@@ -4,6 +4,7 @@ import { useContext, useRef,useEffect, useState} from 'react';
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from './loading';
 import logo from '../media/icons/Fittest_Logo.jpg'
+import { supabase } from '../api/supabaseClient';
 
 export function Login(){
     const {auth,signIn} = useContext(AuthContext)
@@ -48,6 +49,7 @@ export function Login(){
             setLoading(false)
         }
     }
+
     return(
         <div id={styles.page}>
         <div className={styles.formContainer}>  
@@ -58,8 +60,10 @@ export function Login(){
             <div>
             {error.general?<div className={styles.errorMessage}>{error.general}</div>:''}
             </div>
+            <GoogleLoginButton></GoogleLoginButton>
+            
             <label className={styles.formLabel}> Email </label>
-        
+
             <input ref ={user} type="email"></input>
             {error.username?<div className={styles.errorMessage}>{error.username}</div>:''}
            
@@ -83,6 +87,48 @@ export function Login(){
         </div>
     )
 }
+
+
+export default function GoogleLoginButton() {
+  const handleGoogleLogin = async () => {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: '/dashboard', // optional: where to go after login
+      },
+    });
+
+    if (error) {
+      console.error("Error logging in with Google:", error.message);
+    } else {
+      console.log("Redirecting to Google login…", data);
+    }
+  };
+
+  return (
+    <button
+      onClick={handleGoogleLogin}
+      style={{
+        color: "#444",
+        display: "flex",
+        alignItems: "center",
+        padding: "10px 20px",
+        border: "1px solid #ccc",
+        borderRadius: "8px",
+        cursor: "pointer",
+        backgroundColor: "white",
+      }}
+    >
+      <img
+        src="https://developers.google.com/identity/images/g-logo.png"
+        alt="Google Logo"
+        style={{ width: "20px", marginRight: "10px" }}
+      />
+      Sign in with Google
+    </button>
+  );
+}
+
 
 export function Signup(){
     const {auth,setAuth,signUp} = useContext(AuthContext)
