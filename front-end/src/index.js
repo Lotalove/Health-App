@@ -11,6 +11,7 @@ import PersistLogin from './components/PersistLogin'
 import RequireAuth  from './hooks/requireAuth';
 import { Tracker } from './components/Tracker';
 import { HomePage } from './components/HomePage';
+import {WeeklyChallenge} from './components/WeeklyChallenge';
 import {
   createBrowserRouter,
   RouterProvider
@@ -64,7 +65,15 @@ const router = createBrowserRouter([
             <Tracker/>
           </RequireAuth>
         ),
-      }
+      },
+         {
+        path: "/challenges", // Protected tracking route
+        element: (
+          <RequireAuth>
+            <WeeklyChallenge/>
+          </RequireAuth>
+        ),
+      },
     ],
   },
 ]);

@@ -1,7 +1,6 @@
 const StatusPuck = ({ message, type = "error" }) => {
 const isError = type === "error";
 
-
 const puckStyle = {
 position: "fixed",
 bottom: "1rem",

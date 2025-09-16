@@ -5,6 +5,7 @@ import styles from '../styles/dashboard.module.css'
 import data_icon from '../media/icons/bar-chart.svg'
 import calendar_icon from '../media/icons/calendar.svg'
 import account_icon from '../media/icons/user.svg'
+import walking from '../media/icons/walking.svg'
 import AuthContext from "../context/Authprovider"
 import { useContext, useEffect, useState } from 'react';
 import { WorkoutViewer } from './WorkoutViewer';
@@ -46,8 +47,8 @@ export function Dashboard (){
     var goal_tracking = <Block url = "/goals" title = "Goal Tracking (Beta)" icon= {data_icon}></Block>
     var calendar = <Block url = "/plan" title='Planner' icon={calendar_icon}></Block>
     var account = <Block title='Account' icon = {account_icon}></Block>
-    
-    var widgets= [todays_workout,goal_tracking,calendar,account]
+    var challenges = <Block title='Weekly Walking Challenge' url="/challenges" icon={walking}> </Block>
+    var widgets= [todays_workout,challenges,goal_tracking,calendar,account]
     
     return (
         <div>

@@ -1,0 +1,33 @@
+.challengeList {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    background-color: white;
+    width: 80%;
+    border-radius: 5px;
+    margin-left: 10%;
+    border: solid 1px #ddd;
+
+}
+
+.challengeList:last-child {
+  border-bottom: none;
+}
+.challengeItem {
+display: flex;
+justify-content: space-between;
+border-bottom: solid 1px #ddd;
+padding: 4px;
+}
+.challengeItem:hover {
+  filter: brightness(.8);
+  cursor: pointer;
+  background-color: #fdfdfd;
+}
+
+.challengeHeader{
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-between;
+}
