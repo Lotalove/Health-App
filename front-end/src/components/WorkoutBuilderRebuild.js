@@ -141,10 +141,11 @@ function ExerciseCard({routine, routineRef,setRoutine, wasUpdatedRef,indexOfExer
         );
     }
 
-    
-        const editorToUse = exerciseInfo.category === 'strength'
-    ? <StrengthEditor />:<CardioEditor/>
-   // : <CardioEditor />;
+    const cardioTypes = ['stretching', 'plyometrics', 'cardio'];
+
+    const editorToUse = cardioTypes.includes(exerciseInfo.category)
+    ? <CardioEditor />
+    : <StrengthEditor />;   
     
     //set of buttons displayed if card is editable
     var editable_card_buttons= (

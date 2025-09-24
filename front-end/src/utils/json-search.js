@@ -15,20 +15,25 @@ export function searchByID(id){
 
 export function searchByMuscleGroup(muscleGroup){
     // Back: lower back, middle back, lats ; Legs: adductors,calves, hamstrings, quadriceps,glutes
+    var stengthExercises = data.filter((exercise)=>{
+        const strengthTypes = ['strength', 'strongman', 'powerlifting','olympic weightlifting'];
+        const isStrength = strengthTypes.includes(exercise.category)
+        return isStrength
+    })
     
-    if(muscleGroup == 'back'){
+    if(muscleGroup === 'back'){
         var backMuscles = ['lower back','middle back','lats']
-        return data.filter((ex)=>{
+        return stengthExercises.filter((ex)=>{
             return backMuscles.includes(ex.primaryMuscles[0])
         })
     }
-    else if (muscleGroup == 'legs'){
+    else if (muscleGroup === 'legs'){
         var legMuscles = ['adductors','calves','hamstrings','quadriceps','glutes']
-        return data.filter((ex)=>{
+        return stengthExercises.filter((ex)=>{
             return legMuscles.includes(ex.primaryMuscles[0])
         })
     }
-    return data.filter((exercise)=>{if(exercise.primaryMuscles.includes(muscleGroup) ) return true})
+    return stengthExercises.filter((exercise)=>{if(exercise.primaryMuscles.includes(muscleGroup) ) return true})
 }
 
 //filters a list given by the searchByMuscleGroup function for equiptment available to user
