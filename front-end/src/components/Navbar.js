@@ -22,6 +22,7 @@ function Icon(props){
 }
 
 
+
 export function Navbar (){
     const navigate = useNavigate(); // useNavigate must be called inside a functional component
     const {auth,setAuth,signOut} = useContext(AuthContext)
@@ -29,10 +30,11 @@ export function Navbar (){
         navigate('/dashboard'); // Redirect to the '/dashboard' route
     };
 
+
     async function logout() {
             try {
                 
-                const response = await signOut()
+                await signOut()
                 await setAuth(null)
                 //navigate('/')
             } catch (error) {
@@ -42,7 +44,7 @@ export function Navbar (){
         }
     return(
         <div id="navbar">
-             <img 
+             <img
                 id="logo"
                 src={logo}
                 onClick={goHome}

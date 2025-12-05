@@ -24,13 +24,23 @@ export const AuthProvider = ({ children }) => {
     }
     const signIn = async(email,password)=>{
       
-        const {data,error} = await supabase.auth.signInWithPassword({email,password})
-        if(data.user !==null){
+        let response = await fetch("http://localhost:3001/login",{method:"POST",headers:{"Content-Type":'application/json'},body:JSON.stringify({email:email,password:password})})
+        
+        let data = await response.json()
+        data = data.data
+        console.log(data)
+        if (data.user !==null) {
             setAuth(data)
             return({success:true,data})
         }
-        if(error){
-            return({success:false,error})}
+        
+        // const {data,error} = await supabase.auth.signInWithPassword({email,password})
+        // if(data.user !==null){
+        //     setAuth(data)
+        //     return({success:true,data})
+        // }
+        // if(error){
+        //     return({success:false,error})}
         
     }
 

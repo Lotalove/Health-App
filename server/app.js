@@ -8,6 +8,7 @@ const logoutController = require('./controllers/logout_controller')
 const refreshTokenController = require('./controllers/refreshTokenController');
 const routineController = require('./controllers/routine_controller')
 const cookieParser = require('cookie-parser');
+const { createClient } = require("./config/supabase")
 
 server.use(Express.json());
 server.use(cors(corsOptions ))
