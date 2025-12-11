@@ -7,17 +7,25 @@ const AuthContext = createContext({});
 export const AuthProvider = ({ children }) => {
     const [auth, setAuth] = useState({});
     const signUp = async(email,password) =>{
-        const {data,error} = await supabase.auth.signUp({email:email,
-            password:password,
-            options:{data:{
-                role:"client"
-            }}
+     let response = await fetch("http://localhost:3001/login",{method:"POST",headers:{"Content-Type":'application/json'},body:JSON.stringify({email:email,password:password})}) 
+        let data = await response.json()
+        data = data.data
+        if (data.user !==null) {
+            setAuth(data)
+            return({success:true,data})
+        }
+    
+        //     const {data,error} = await supabase.auth.signUp({email:email,
+    //         password:password,
+    //         options:{data:{
+    //             role:"client"
+    //         }}
             
-        })
+    //     })
   
-        if(error){return({success:false,error})}
-        return({success:true,data})
-    }
+    //     if(error){return({success:false,error})}
+    //     return({success:true,data})
+    // }
 
     const signOut = async()=>{
         const {error} = await supabase.auth.signOut()
@@ -50,5 +58,5 @@ export const AuthProvider = ({ children }) => {
         </AuthContext.Provider>
     )
 }
-
+}
 export default AuthContext;
