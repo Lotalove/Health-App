@@ -6,6 +6,7 @@ import { useContext, useEffect, useState } from "react"
 import { WorkoutBuilder } from "./WorkoutBuilderRebuild"
 import AuthContext from "../context/Authprovider"
 import RoutineContext from '../context/RoutineProvider'
+import SuccessMessage from "./SuccessMessage"
 
 
 function Day(props){
@@ -20,6 +21,7 @@ function Day(props){
     
     function closeWorkoutBuilder(){
         setSelected(false)
+        props.updateMessage('Successfully Saved Workout')
     }
 
 
@@ -40,7 +42,7 @@ function Day(props){
             <p id={styles.popup_close} 
             onClick={()=>{setSelected(!isSelected)}}    
             >X</p>
-            <WorkoutBuilder close ={closeWorkoutBuilder} date={props.date} routineInfo={props.routineInfo?props.routineInfo:[]}></WorkoutBuilder>
+            <WorkoutBuilder  updateMessage = {props.updateMessage} close ={closeWorkoutBuilder} date={props.date} routineInfo={props.routineInfo?props.routineInfo:[]}></WorkoutBuilder>
           </div>
           </div>
         )}
@@ -52,6 +54,7 @@ function Calendar(){
 var [view_mode,set_view_mode] = useState('month')
 var [range,setRange] = useState(new Date())
 var [routines,setRoutines] = useState([])
+const [messageForUser,setMessage] = useState(null)
 const [fetchError,setFetchError] = useState(null)
 var month_list = ["January","February","March","April","May","June","July","August","September","October","November","December"]
 var {routines,fetchRoutines} = useContext(RoutineContext)
@@ -68,25 +71,22 @@ var {routines,fetchRoutines} = useContext(RoutineContext)
 var calendar_head = (
     <div id={styles.calendar_head}>
     
-    <h2>{month_list[range.getMonth()] + " " + range.getFullYear()}</h2>
-    
     <img  
     onClick ={()=>{
         setRange(new Date(range.getFullYear(),range.getMonth()-1), range.getDate())
         
     }} 
     src={arrow_left}></img>
+    <h2>{month_list[range.getMonth()] + " " + range.getFullYear()}</h2>
+    
+
     <img 
     onClick ={()=>{
         setRange(new Date(range.getFullYear(),range.getMonth()+1), range.getDate())
         
     }} src = {arrow_right}></img>
 
-    <select onChange={(event) => set_view_mode(event.target.value)}>    
-        <option value='month'>Month</option>
-        <option value='week'>Week</option>
-        <option value='day'>Day</option>
-    </select>
+    
 
     </div>
 )
@@ -111,7 +111,7 @@ const render_day_cells = ()=>{
 
         // adds a blank day if the month does not start on this day of the week
         for(var i = 0; i < day_of_week; i++ ){
-            days.push(<Day></Day>)
+            days.push(<Day updateMessage = {setMessage}></Day>)
         }
         var currentDate = date_to_add
         while(date_to_add.getMonth() == range.getMonth()){
@@ -122,11 +122,13 @@ const render_day_cells = ()=>{
         var isToday = (today.toString() == currentDate.toString())
         days.push(
             <Day id={date}
-            isToday={isToday}
-           routineInfo ={findEventOnDate(currentDate)}
-           day={date} // todo later: the date variable is actually the day so change
-           date={date_to_add.toISOString().split('T')[0]}> 
-         
+                isToday={isToday}
+                routineInfo ={findEventOnDate(currentDate)}
+                day={date} // todo later: the date variable is actually the day so change
+                date={date_to_add.toISOString().split('T')[0]}
+                updateMessage = {setMessage}
+                > 
+                         
            </Day>
              )    
         date_to_add.setDate(date_to_add.getDate()+1)
@@ -150,9 +152,12 @@ const render_day_lables = () => {
     }
     return days;
 }
+const clearMessage = ()=>{setMessage(null)}
+    
 
 return(
     <div id={styles.calendar}> 
+        {messageForUser?<SuccessMessage message = {messageForUser} clearMessage={clearMessage}></SuccessMessage>:null}
         {calendar_head}
         <div className={styles.calendar_body}>
         {render_day_lables()}

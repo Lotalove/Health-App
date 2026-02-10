@@ -16,7 +16,7 @@ import { generateWorkout } from '../utils/generateWorkout.js'
 import Routine from '../utils/routine.js'
 
 
-function ExerciseCard({routine, routineRef,setRoutine, wasUpdatedRef,indexOfExercise,exerciseProps}){
+function ExerciseCard({routine, routineRef,setRoutine, wasUpdatedRef,indexOfExercise,exerciseProps,updateMessage}){
     var [exerciseInfo,setExerciseInfo] = useState(indexOfExercise!=null?routine.getList()[indexOfExercise]:exerciseProps)
     var [editing, setEditing] = useState(indexOfExercise != null ? false : true)
 
@@ -28,17 +28,17 @@ function ExerciseCard({routine, routineRef,setRoutine, wasUpdatedRef,indexOfExer
     setRoutine(new Routine(routine.getList()))
     routineRef.current = routine
     wasUpdatedRef.current = true 
+    updateMessage("Sucesfully Added Exercise")
 }
 
     function deleteExercise(index){
-        console.log("Deleting exercise at index:", index);
         routine.remove_exercise(index)
         // it is necessary to update the routine to a new object to force a rerender
         var newRoutine = new Routine (routine.getList()) 
         setRoutine(newRoutine)
         wasUpdatedRef.current = true
         routineRef.current = newRoutine
-
+        updateMessage("Sucesfully Deleted Exercise")
     }
 
     function handleSetsChange(numSets) {
@@ -167,9 +167,15 @@ function ExerciseCard({routine, routineRef,setRoutine, wasUpdatedRef,indexOfExer
 
     var addable_card_button = (
         <div id={styles.card_buttons}>
-        <SuccessMessage message="Successfully Added Exercise" clickFunction = {()=>{
-            addExercise();
-        }}></SuccessMessage>
+        
+        <button onClick={()=>{
+        addExercise()
+        
+
+    }}
+         className="trigger-btn">
+        Add Exercise
+      </button>
         </div>
     )
        
@@ -191,7 +197,7 @@ function ExerciseCard({routine, routineRef,setRoutine, wasUpdatedRef,indexOfExer
     )
 }
 
-export function SearchMenu({closeMenu,routine,setRoutine,routineRef,wasUpdatedRef}){
+export function SearchMenu({closeMenu,routine,setRoutine,routineRef,wasUpdatedRef,updateMessage}){
     var search_input = useRef(null)
     var [search_results , setSearchRes] = useState(null) 
     const debounceTimeout = useRef(null);
@@ -225,7 +231,7 @@ export function SearchMenu({closeMenu,routine,setRoutine,routineRef,wasUpdatedRe
         {search_results!= null?search_results.map((result,index)=>{
             const exerciseData = { ...result, reps: [1] }; 
          
-          return (<ExerciseCard key={result.id || index} routine={routine} routineRef={routineRef}setRoutine={setRoutine}  wasUpdatedRef={wasUpdatedRef}indexOfExercise={null} exerciseProps={exerciseData}></ExerciseCard>)
+          return (<ExerciseCard key={result.id || index} routine={routine} routineRef={routineRef}setRoutine={setRoutine}  wasUpdatedRef={wasUpdatedRef}indexOfExercise={null} exerciseProps={exerciseData}updateMessage= {updateMessage}></ExerciseCard>)
         }):null}
         </div>
     </div>
@@ -249,13 +255,14 @@ function GenWorkoutMenu(props){
         // this bit of code will save te new routine to the routines database
            createRoutine({date:props.date,exercises:routine.getExIDList(),reps:routine.getRepsList(),user_id:auth.user.id})
            props.setRoutine(new Routine(routine.getList()))
+        
         }
         catch (err){
             setErrorMessage("Something went wrong when saving your workout. Try again and if this message appears report to admin")
             return
         }
            props.close() //closes the workout builder 
-    
+        
         }
     function generateRoutine(){
         setRoutine(generateWorkout(settings))
@@ -413,7 +420,7 @@ export function WorkoutBuilder(props){
     const { auth } = useAuth();
     const {createRoutine,updateRoutine,deleteRoutine} = useContext(RoutineContext)
     /*
-    exercises are stored as a list of id's in the database. The below function finds the
+    exercises are stored as a list of id'Sic in the database. The below function finds the
     exercise information using this id.
     
     The database stores the reps for each exercise in an arary which hold arrays with an int 
@@ -449,18 +456,23 @@ export function WorkoutBuilder(props){
                     if (wasUpdatedRef.current == true) {
                         
                         const isNew = props.routineInfo.routine ? false : true;
-        
+                        let userFeedback = null;
                         if (isNew) {
                             await createRoutine({date:props.date,exercises:routineRef.current.getExIDList(),reps:routineRef.current.getRepsList(),user_id:auth.user.id});
+                            userFeedback = "Created new workout"
                         } else {
                             if (routineRef.current.getExIDList().length === 0) {
                                 await deleteRoutine(props.routineInfo.routine.id);
+                                userFeedback = "Deleted Workout"
                             } else {
-                                console.log("updating routine")
                                 await updateRoutine(routineRef.current,props.routineInfo.routine.id);
+                                userFeedback = "Updated workout"
                             }
+
+                           
                         }
                         
+                        props.updateMessage(userFeedback)
                     }
                 };
         
@@ -483,11 +495,11 @@ export function WorkoutBuilder(props){
     
     <div className={styles.exercise_list}>
    {routine.getList().map((exercise,index)=>{
-    return <ExerciseCard key={index + exercise.name} routine={routine} routineRef={routineRef}  setRoutine ={setRoutine} wasUpdatedRef={wasUpdatedRef} indexOfExercise={index} ></ExerciseCard>
+    return <ExerciseCard key={index + exercise.name} routine={routine} routineRef={routineRef}  setRoutine ={setRoutine} wasUpdatedRef={wasUpdatedRef} indexOfExercise={index}  updateMessage={ props.updateMessage}></ExerciseCard>
    })}
    </div>
     {isGenerating?<GenWorkoutMenu routine={routine} routineRef={routineRef} setRoutine={setRoutine} close={()=>{setGenerating(false)}} date={props.date} />:null}
-   {isAdding?<SearchMenu closeMenu={closeSearchMenu}routine={routine} routineRef={routineRef} setRoutine={setRoutine} wasUpdatedRef={wasUpdatedRef}></SearchMenu>:null}
+   {isAdding?<SearchMenu closeMenu={closeSearchMenu}routine={routine} routineRef={routineRef} setRoutine={setRoutine} wasUpdatedRef={wasUpdatedRef} updateMessage={props.updateMessage}></SearchMenu>:null}
      {!isGenerating?<button 
         id={styles.add_button}
         onClick={()=>{

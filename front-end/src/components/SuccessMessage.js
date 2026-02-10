@@ -1,31 +1,30 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../styles/SuccessMessage.css"; // Optional: External CSS for styling
 
 const SuccessMessage = (props) => {
   const [isVisible, setIsVisible] = useState(false);
+  const [message,setMessage] = useState(props.message)
+  useEffect(() => {
+    if (!props.message) return;          // nothing to show
 
-  const showMessage = () => {
-    setIsVisible(true);
-    setTimeout(() => {
-      setIsVisible(false);
-    }, 1000);
-  };
+    setMessage(props.message)
+    setIsVisible(true);            // show immediately when message changes
+
+    const timer = setTimeout(() => {
+      props.clearMessage()       
+    }, 2000);
+
+    return () => clearTimeout(timer); // cleanup if message changes/unmounts
+  }, [props.message]);        
 
   return (
     <>
       {isVisible && (
         <div className="success-message">
-          <p>✅ {props.message}</p>
+          <p>{message}</p>
         </div>
       )}
-    <button onClick={()=>{
-        props.clickFunction()
-        showMessage()
-    
-    }}
-         className="trigger-btn">
-        Add Exercise
-      </button>
+
     </>
   );
 };
