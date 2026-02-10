@@ -1,14 +1,12 @@
 import styles from '../styles/workout_builder.module.css'
 import edit_icon from '../media/icons/pencil.svg'
 import trash_icon from '../media/icons/trash.svg'
-import add_icon from '../media/icons/add.svg'
 import shuffle from '../media/icons/Frame.svg'
 import exercise_photo from '../media/bicep_curl.jpg'
 import {useEffect, useRef, useState,useContext} from 'react'
 import {search,searchByID} from '../utils/json-search'
 import { getExerciseImage } from '../utils/getImages'
 import useAuth from '../hooks/useAuth'
-import SuccessMessage from "./SuccessMessage"
 import RoutineContext from '../context/RoutineProvider'
 import {SetsInput,RepsInput,DurationInput} from './NumberInput'
 import {getCardioType} from "../utils/getExerciseType.js";

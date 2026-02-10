@@ -4,7 +4,6 @@ import arrow_left from '../media/icons/arrow-left.svg'
 import arrow_right from '../media/icons/arrow-right.svg'
 import { useContext, useEffect, useState } from "react"
 import { WorkoutBuilder } from "./WorkoutBuilderRebuild"
-import AuthContext from "../context/Authprovider"
 import RoutineContext from '../context/RoutineProvider'
 import SuccessMessage from "./SuccessMessage"
 
