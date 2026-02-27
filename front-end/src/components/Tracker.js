@@ -203,24 +203,39 @@ return(
 function Summary({routine}){
     const navigate = useNavigate();     
     var muscleGroups =new Set()
+    var totalVolume = 0;
     routine.forEach(exercise=>{
-        muscleGroups.add(exercise.primaryMuscles[0])
+        //adds each new  primary muscle group of each exercise to the muscle group set with capitalized first letter 
+        muscleGroups.add(exercise.primaryMuscles[0].charAt(0).toUpperCase() + exercise.primaryMuscles[0].slice(1) )
+        exercise.weights.forEach(weight=>{totalVolume+=weight})
+        
+
     })
     
+
+
+    /* 
+    would like add workout time and pr's hit ot the summary page
+    | ⏱️: 1 hour 22 minutes  🏆:1, Streak
+    */
     return(
     <div>
+        
     <div id={styles.workout_summary}>
+        <h1>Workout completed, good work!</h1> 
         <div style={{ display: "flex", alignItems: "center" }}>
+            
         <h2 style={{ marginLeft: "8px", textAlign: "left", width: "fit-content" }}>Workout Summary:</h2>
-  <p
+  <h3
     onClick={() => navigate("/dashboard")}
     style={{ marginLeft: "auto", cursor: "pointer", marginRight:"8px" }}
   >
-    {"<-- "} back home
-  </p>
+    Back Home
+  </h3>
 </div>
 
-        <h4>💪:{[... muscleGroups].join(', ')} | ⏱️: 1 hour 22 minutes |⚡: 300 Cals | 🏆:1</h4>
+        <p><b>Muscles Trained: </b> {[... muscleGroups].join(', ')}</p> 
+        <p><b>Total Volume: </b>{totalVolume} lbs</p>
     </div>
      <div id="background_overlay"></div>
     </div>

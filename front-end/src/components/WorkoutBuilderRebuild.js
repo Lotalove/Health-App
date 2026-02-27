@@ -26,7 +26,7 @@ function ExerciseCard({routine, routineRef,setRoutine, wasUpdatedRef,indexOfExer
     setRoutine(new Routine(routine.getList()))
     routineRef.current = routine
     wasUpdatedRef.current = true 
-    updateMessage("Sucesfully Added Exercise")
+    if (updateMessage){updateMessage("Sucesfully Added Exercise")}
 }
 
     function deleteExercise(index){
