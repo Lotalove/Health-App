@@ -27,17 +27,17 @@ export const RoutinesProvider = ({ children }) => {
     
   };
 
-  const updateRoutine = async (updatedRoutine,id) => {
+  const updateRoutine = async (routine,id) => {
     console.log("updating the routine")
     const {data,error} = await supabase
     .from('Routines')
-    .update({exercises:updatedRoutine.getExIDList(),reps:updatedRoutine.getRepsList(),weight_matrix:updatedRoutine.getWeightList(),completion_matrix:updatedRoutine.getCompletionList()})
+    .update(routine)
     .eq('id',id)
     .select()
     if(error){console.log(error)}
     if(data) {
         setRoutines( 
-          routines.map((r) => r.id == id ? data[0] : r)
+          routines.map((r) => r.id === id ? data[0] : r)
     ); 
       }
   };

@@ -2,7 +2,7 @@ import { Navbar } from "./Navbar"
 import styles from '../styles/tracker.module.css'
 import Routine from "../utils/routine"
 import { useState,useEffect,useRef,useContext, useReducer} from "react"
-import { resolvePath, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import {searchByID} from '../utils/json-search'
 import { SearchMenu } from "./WorkoutBuilderRebuild";
 import { getTodaysDate } from "../utils/getDate";
