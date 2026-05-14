@@ -3,7 +3,7 @@ import styles from '../styles/planner.module.css'
 import arrow_left from '../media/icons/arrow-left.svg'
 import arrow_right from '../media/icons/arrow-right.svg'
 import { useContext, useEffect, useState } from "react"
-import { WorkoutBuilder } from "./WorkoutBuilderRebuild"
+import { WorkoutBuilder } from "./WorkoutBuilder/WorkoutBuilderRebuild2"
 import RoutineContext from '../context/RoutineProvider'
 import SuccessMessage from "./SuccessMessage"
 
@@ -20,10 +20,7 @@ function Day(props){
     
     function closeWorkoutBuilder(){
         setSelected(false)
-        props.updateMessage('Successfully Saved Workout')
     }
-
-
 
     return(
         <div onClick={()=>{
@@ -37,12 +34,14 @@ function Day(props){
               
               {isSelected &&(
             <div id={styles.background_overlay}>
-            <div id={styles.calendar_event_popup}>
-            <p id={styles.popup_close} 
-            onClick={()=>{setSelected(!isSelected)}}    
-            >X</p>
-            <WorkoutBuilder  updateMessage = {props.updateMessage} close ={closeWorkoutBuilder} date={props.date} routineInfo={props.routineInfo?props.routineInfo:[]}></WorkoutBuilder>
-          </div>
+
+
+            <WorkoutBuilder  
+            updateMessage = {props.updateMessage} 
+            close ={closeWorkoutBuilder} 
+            date={props.date} 
+            routineSchema={props.routineInfo?props.routineInfo.routine:null}/>
+  
           </div>
         )}
         </div>
@@ -56,39 +55,17 @@ var [routines,setRoutines] = useState([])
 const [messageForUser,setMessage] = useState(null)
 const [fetchError,setFetchError] = useState(null)
 var month_list = ["January","February","March","April","May","June","July","August","September","October","November","December"]
+
 var {routines,fetchRoutines} = useContext(RoutineContext)
 
  useEffect(()=>{
         fetchRoutines()
-        console.log(routines)
     },[])
 
     useEffect(()=>{
 
     },[routines])
 
-var calendar_head = (
-    <div id={styles.calendar_head}>
-    
-    <img  
-    onClick ={()=>{
-        setRange(new Date(range.getFullYear(),range.getMonth()-1), range.getDate())
-        
-    }} 
-    src={arrow_left}></img>
-    <h2>{month_list[range.getMonth()] + " " + range.getFullYear()}</h2>
-    
-
-    <img 
-    onClick ={()=>{
-        setRange(new Date(range.getFullYear(),range.getMonth()+1), range.getDate())
-        
-    }} src = {arrow_right}></img>
-
-    
-
-    </div>
-)
 
 function findEventOnDate(date){
     
@@ -123,7 +100,7 @@ const render_day_cells = ()=>{
             <Day id={date}
                 isToday={isToday}
                 routineInfo ={findEventOnDate(currentDate)}
-                day={date} // todo later: the date variable is actually the day so change
+                day={date} // todo later: the date variable is actually the day 
                 date={date_to_add.toISOString().split('T')[0]}
                 updateMessage = {setMessage}
                 > 
@@ -157,7 +134,26 @@ const clearMessage = ()=>{setMessage(null)}
 return(
     <div id={styles.calendar}> 
         {messageForUser?<SuccessMessage message = {messageForUser} clearMessage={clearMessage}></SuccessMessage>:null}
-        {calendar_head}
+         <div id={styles.calendar_head}>
+    
+    <img  
+    onClick ={()=>{
+        setRange(new Date(range.getFullYear(),range.getMonth()-1), range.getDate())
+        
+    }} 
+    src={arrow_left}></img>
+    <h2>{month_list[range.getMonth()] + " " + range.getFullYear()}</h2>
+    
+
+    <img 
+    onClick ={()=>{
+        setRange(new Date(range.getFullYear(),range.getMonth()+1), range.getDate())
+        
+    }} src = {arrow_right}></img>
+
+    
+
+    </div>
         <div className={styles.calendar_body}>
         {render_day_lables()}
         {render_day_cells()}

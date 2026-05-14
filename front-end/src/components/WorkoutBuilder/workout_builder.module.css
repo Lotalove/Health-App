@@ -1,0 +1,165 @@
+.workout_builder{
+    display: flex;
+    flex-direction: column;
+    position: fixed; /* Fixes the popup relative to the viewport */
+    top: 10%; /* 20% from the top of the viewport */
+    left: 10%; /* 10% from the left of the viewport */
+    background-color: white;
+    width: 80%; /* Takes up 80% of the viewport width */
+    height: 75vh; /* Takes up 60% of the viewport height */
+    z-index: 1000; /* Ensures the popup is above other content */
+    border-radius: 8px; /* Optional: Adds rounded corners */
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); /* Optional: Adds a shadow for depth */
+    padding: 16px; /* Adds internal spacing */
+    overflow: scroll; /* Ensures content scrolls if it overflows */
+    scrollbar-width: none;
+}
+
+.exercise_list{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start; /* Align items to the left */
+    width: 100%;
+    overflow-y: scroll;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 1024px) {
+
+
+}
+
+@media screen and (max-width: 768px) {
+    .exercise_card {
+        width: 100%; /* One card per row on small screens */
+    }
+   .workout_builder {
+    padding: 0; 
+    margin: 0;
+    border-radius: 0;
+  }
+      #builder_header {
+        flex-direction: column; /* Stack buttons vertically on very small screens if needed, or keep row */
+        align-items: stretch; /* Make buttons take full width if stacking */
+        gap: 8px; /* Add space between buttons */
+    }
+
+    #gen_button {
+        font-size: 14px; /* Smaller font for mobile */
+        padding: 8px 12px; /* Reduce padding for compactness */
+        width: 100%; /* Full width on mobile for easier tapping */
+        margin-left: 0; /* Remove left margin */
+    }
+
+    #header_right {
+        display: flex;
+        justify-content: flex-end; /* Keep right buttons aligned to the right */
+        gap: 8px; /* Space between Save and Close buttons */
+    }
+
+    #header_right button {
+        font-size: 14px; /* Smaller font */
+        padding: 8px 12px; /* Reduce padding */
+        flex: 1; /* Make buttons share space evenly if needed */
+    }
+}
+
+#add_button{
+align-self: center;
+width: 80%;
+background-color: #3498DB;
+color: white;
+border-style: none;
+border-radius: 60px;
+padding: .5%;
+padding-top:.75%;
+padding-bottom: .75%;
+margin: auto;
+}
+#add_button:hover{
+    background-color: #3290cf;
+    cursor: pointer;
+}
+
+#background_overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.1); /* Dark semi-transparent overlay */
+    backdrop-filter: blur(2px); /* Apply blur to background */
+    z-index: 1; 
+}
+
+.button:hover{
+    background-color: #3290cf;
+    cursor: pointer;
+}
+
+#save_button{
+    width: 80%;
+    margin-left: 10%;
+    border-radius: 8px;
+    margin-bottom: 16px;
+}
+.routine_list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start; /* Align items to the left */
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+ 
+}
+#generatedRoutineList{
+    position:absolute;
+    top: 0;
+    background-color: white;
+    height: 100%;
+     position: relative;
+}
+#gen_button{
+    width: fit-content;
+    background-color: #2196F3;
+    border: none;
+    border-radius: 8px;
+    margin-left: 8px;
+    font-size: 16px;
+}
+
+
+input[type=checkbox]
+{
+  /* Double-sized Checkboxes */
+  -ms-transform: scale(1.5); /* IE */
+  -moz-transform: scale(1.5); /* FF */
+  -webkit-transform: scale(1.5); /* Safari and Chrome */
+  -o-transform: scale(1.5); /* Opera */
+  transform: scale(1.5);
+  padding: 10px;
+}
+
+/* Might want to wrap a span around your checkbox text */
+.checkboxtext
+{
+  /* Checkbox text */
+  font-size: 110%;
+  
+  padding: 1%;
+}
+
+
+#builder_header{
+display: flex;
+width: 100%;
+justify-content: space-between;
+align-items: center;
+}
+
+#header_right{
+    position: relative;
+    right: 0;
+}
