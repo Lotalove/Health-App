@@ -3,7 +3,7 @@ import logo from '../media/icons/Fittest_Logo.jpg'
 import account_icon from '../media/icons/user.svg'
 import { useNavigate } from "react-router-dom";
 import { useContext } from 'react';
-import axios from '../api/axios';
+
 import AuthContext from '../context/Authprovider';
 // styles for the navbar are loacted in ../styles/App.css
 

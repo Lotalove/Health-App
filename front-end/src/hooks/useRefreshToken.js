@@ -1,5 +1,5 @@
 import {supabase} from '../api/supabaseClient' 
-import axios from '../api/axios';
+
 
 import useAuth from './useAuth';
 
