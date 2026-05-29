@@ -9,7 +9,7 @@ import { AuthProvider } from './context/Authprovider';
 import { RoutinesProvider } from './context/RoutineProvider';
 import PersistLogin from './components/PersistLogin'
 import RequireAuth  from './hooks/requireAuth';
-import { Tracker } from './components/Tracker';
+import { Tracker } from './components/Tracker/Tracker';
 import { HomePage } from './components/HomePage';
 import {WeeklyChallenge} from './components/WeeklyChallenge';
 import {

@@ -1,7 +1,7 @@
 import { Navbar } from "./Navbar"
 import styles from '../styles/tracker.module.css'
 import Routine from "../utils/routine"
-import { useState,useEffect,useRef,useContext, useReducer} from "react"
+import { useState,useEffect,useRef,useContext,} from "react"
 import { useLocation } from 'react-router-dom';
 import {searchByID} from '../utils/json-search'
 import { SearchMenu } from "./WorkoutBuilderRebuild";
@@ -15,8 +15,9 @@ import { useNavigate } from "react-router-dom";
 export function Tracker(props){
     const { auth } = useAuth();
     const {createRoutine,updateRoutine,deleteRoutine} = useContext(RoutineContext)
+
     const location = useLocation();
-    const [routine,setRoutine] = useState(new Routine)
+    const [routine,setRoutine] = useState(new Routine())
     const [isAdding,setAdding] = useState(false)
     const [isFinished,setFinished] = useState(false)
     const [confirmed,setConfirm] = useState("No")
@@ -24,6 +25,7 @@ export function Tracker(props){
     const wasUpdatedRef = useRef(false); 
     var date = location.state?location.state.date:getTodaysDate() 
     
+    console.log(location.state)
     async function saveWorkout(){
 
         const isNew = location.state ? false : true;

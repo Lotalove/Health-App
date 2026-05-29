@@ -1,6 +1,5 @@
 import {supabase} from '../api/supabaseClient' 
 
-
 import useAuth from './useAuth';
 
 

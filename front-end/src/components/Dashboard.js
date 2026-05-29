@@ -26,7 +26,7 @@ return(
 
 export function Dashboard (){
     var [routine,setRoutine] = useState(null)
-    var TW = getNextRoutine(routine)
+    var nextWorkout = getNextRoutine(routine)
     const [fetchError,setFetchError] = useState(null)
     useEffect(()=>{
         const fetchRoutines = async ()=>{
@@ -43,7 +43,7 @@ export function Dashboard (){
 
 
 
-    var todays_workout = <Block title="Log Next Workout" url={"/track"}  state ={TW} content={TW?<WorkoutViewer routine={TW}></WorkoutViewer>:<p>No Future Workouts Scheduled, Click to log unschedueld workout</p>}></Block>
+    var todays_workout = <Block title="Log Next Workout" url={"/track"}  state ={nextWorkout} content={nextWorkout?<WorkoutViewer routine={nextWorkout}></WorkoutViewer>:<p>No Future Workouts Scheduled, Click to log unschedueld workout</p>}></Block>
     var goal_tracking = <Block url = "/goals" title = "Goal Tracking (Beta)" icon= {data_icon}></Block>
     var calendar = <Block url = "/plan" title='Planner' icon={calendar_icon}></Block>
     var account = <Block title='Account' icon = {account_icon}></Block>

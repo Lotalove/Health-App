@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useContext } from 'react';
 
 import AuthContext from '../context/Authprovider';
-// styles for the navbar are loacted in ../styles/App.css
+// styles for the navbar are located in ../styles/App.css
 
 function Icon(props){
     
