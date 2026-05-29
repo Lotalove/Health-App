@@ -44,11 +44,12 @@ export function Dashboard (){
 
 
     var todays_workout = <Block title="Log Next Workout" url={"/track"}  state ={nextWorkout} content={nextWorkout?<WorkoutViewer routine={nextWorkout}></WorkoutViewer>:<p>No Future Workouts Scheduled, Click to log unschedueld workout</p>}></Block>
+
     var goal_tracking = <Block url = "/goals" title = "Goal Tracking (Beta)" icon= {data_icon}></Block>
     var calendar = <Block url = "/plan" title='Planner' icon={calendar_icon}></Block>
     var account = <Block title='Account' icon = {account_icon}></Block>
     var challenges = <Block title='Weekly Walking Challenge' url="/challenges" icon={walking}> </Block>
-    var widgets= [todays_workout,challenges,goal_tracking,calendar,account]
+    var widgets= [challenges,goal_tracking,calendar,account]
     
     return (
         <div>
