@@ -16,6 +16,18 @@ export const RoutinesProvider = ({ children }) => {
     
   };
 
+  const fetchTodaysRoutine = async (date)=>{
+
+    const {data,error} = await supabase.from("Routines").select().eq('date',date).maybeSingle()
+
+  if (error) {
+    console.error("Error fetching today's routine:", error.message);
+    return null; 
+  }
+
+  return data;
+  }
+
   const createRoutine = async (routine) => {
   
     const {data,error} = await supabase
@@ -56,7 +68,7 @@ export const RoutinesProvider = ({ children }) => {
 
 
   return (
-    <RoutinesContext.Provider value={{ routines, createRoutine, updateRoutine, deleteRoutine, fetchRoutines }}>
+    <RoutinesContext.Provider value={{ routines, createRoutine, updateRoutine, deleteRoutine, fetchRoutines,fetchTodaysRoutine }}>
       {children}
     </RoutinesContext.Provider>
   );

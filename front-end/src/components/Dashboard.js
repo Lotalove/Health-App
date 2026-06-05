@@ -49,7 +49,7 @@ export function Dashboard (){
     var calendar = <Block url = "/plan" title='Planner' icon={calendar_icon}></Block>
     var account = <Block title='Account' icon = {account_icon}></Block>
     var challenges = <Block title='Weekly Walking Challenge' url="/challenges" icon={walking}> </Block>
-    var widgets= [challenges,goal_tracking,calendar,account]
+    var widgets= [todays_workout,challenges,goal_tracking,calendar,account]
     
     return (
         <div>

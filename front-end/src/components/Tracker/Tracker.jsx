@@ -13,7 +13,7 @@ import { Summary } from "./Summary";
 
 export function Tracker() {
   const { auth } = useAuth();
-  const { createRoutine, updateRoutine, deleteRoutine } = useContext(RoutineContext);
+  const { createRoutine, updateRoutine, deleteRoutine,fetchTodaysRoutine } = useContext(RoutineContext);
   const location = useLocation();
   const [routine, setRoutine] = useState([]);
   const [isAdding, setAdding] = useState(false);
@@ -22,27 +22,60 @@ export function Tracker() {
   const routineRef = useRef(routine);
   const date = location.state?.date ?? getTodaysDate();
 
-  useEffect(() => {
-    if (!location.state) return;
-    convertRoutine(location.state);
-  }, [location.state]);
+useEffect(() => {
+  // 1. Define one unified async function to handle the logic
+  const handleRoutineData = async () => {
+    let data;
+
+
+    if (location.state) {
+      data = location.state;
+    } else {
+      // 3. If not, await the fetch here!
+      data = await fetchTodaysRoutine(date); 
+    }
+
+    console.log(data);
+    
+    if (data) {
+      convertRoutine(data);
+    }
+  };
+
+
+  handleRoutineData();
+
+}, [location.state, date]); 
 
   async function saveWorkout() {
     const isNew = !location.state;
 
-       var exercises = routine.map((exercise)=>{
-            return exercise.id
-        })
-        var reps = routine.map((exercise)=>{
-            return exercise.reps
-        })
-        var newRoutine = {date,exercises:exercises,reps:reps,weight_matrix:null,completion_matrix:null,user_id:auth.user.id}
-        
+    const exercises = routine.map((exercise) => exercise.id);
+    const reps = routine.map((exercise) => exercise.reps);
+
+    // Preserve explicit null matrices if they are intentionally absent.
+    // Otherwise, fall back to the UI values stored on the exercise.
+    const weight_matrix = routine.map(
+      (exercise) => exercise.weight_matrix ?? exercise.weights ?? null
+    );
+    const completion_matrix = routine.map(
+      (exercise) => exercise.completion_matrix ?? exercise.completions ?? null
+    );
+
+    const newRoutine = {
+      date,
+      exercises,
+      reps,
+      weight_matrix,
+      completion_matrix,
+      user_id: auth.user.id,
+    };
+
     if (isNew) {
       await createRoutine(newRoutine);
     } else {
       if (routine.length === 0) {
-        await deleteRoutine(newRoutine,location.state.id);
+        await deleteRoutine(newRoutine, location.state.id);
       } else {
         await updateRoutine(newRoutine, location.state.id);
       }
@@ -53,15 +86,26 @@ export function Tracker() {
 
   function convertRoutine(savedRoutine) {
     const newExercises = savedRoutine.exercises.map((exerciseId, index) => {
-      const exerciseObj = searchByID(exerciseId);
+      const exerciseObj = {
+        ...searchByID(exerciseId),
+      };
+
       exerciseObj.reps = savedRoutine.reps[index];
-      exerciseObj.weights = savedRoutine.weight_matrix?.[index] ?? new Array(exerciseObj.reps?.length ?? 1).fill(null);
-      exerciseObj.completions = savedRoutine.completion_matrix?.[index] ?? new Array(exerciseObj.reps?.length ?? 1).fill(false);
+
+      // Normalize loaded saved data to both UI field names and persistence field names.
+      const weights =
+        savedRoutine.weight_matrix?.[index] ?? new Array(exerciseObj.reps?.length ?? 1).fill(null);
+      const completions =
+        savedRoutine.completion_matrix?.[index] ?? new Array(exerciseObj.reps?.length ?? 1).fill(false);
+
+      exerciseObj.weights = weights;
+      exerciseObj.weight_matrix = weights;
+      exerciseObj.completions = completions;
+      exerciseObj.completion_matrix = completions;
 
       return exerciseObj;
     });
 
-    console.log(newExercises)
     setRoutine(newExercises);
     routineRef.current = newExercises;
   }
@@ -71,43 +115,49 @@ export function Tracker() {
   }
 
   function addExercise(exercise) {
-  
+    const defaultReps = exercise.reps ?? [1];
+    const weights =
+      exercise.weights ?? exercise.weight_matrix ?? new Array(defaultReps.length).fill(null);
+    const completions =
+      exercise.completions ?? exercise.completion_matrix ?? new Array(defaultReps.length).fill(false);
+
     const nextExercise = {
       ...exercise,
-      reps: exercise.reps ?? [1],
-      weights: exercise.weights ?? new Array(exercise.reps?.length ?? 1).fill(null),
-      completions: exercise.completions ?? new Array(exercise.reps?.length ?? 1).fill(false),
+      reps: defaultReps,
+      weights,
+      weight_matrix: weights,
+      completions,
+      completion_matrix: completions,
     };
 
-  
-    setRoutine([...routine,nextExercise]);
+    setRoutine([...routine, nextExercise]);
     setAdding(false);
   }
 
 
- function removeExercise(exerciseIndex) {
-  var newRoutine = routine.filter((_, index) => index !== exerciseIndex);
-  
-  setRoutine(newRoutine);
-}
+  function removeExercise(exerciseIndex) {
+    const newRoutine = routine.filter((_, index) => index !== exerciseIndex);
+    setRoutine(newRoutine);
+  }
 
   function updateExerciseReps(exerciseIndex, reps) {
-    var newRoutine = [...routine];
+    const newRoutine = [...routine];
     newRoutine[exerciseIndex].reps = reps;
-    setRoutine(newRoutine)
+    setRoutine(newRoutine);
   }
 
   function updateExerciseWeights(exerciseIndex, weights) {
-    var newRoutine = [...routine];
+    const newRoutine = [...routine];
     newRoutine[exerciseIndex].weights = weights;
-    setRoutine(newRoutine)
-    
+    newRoutine[exerciseIndex].weight_matrix = weights;
+    setRoutine(newRoutine);
   }
 
   function updateExerciseCompletions(exerciseIndex, completions) {
-    var newRoutine = [...routine];
-    newRoutine[exerciseIndex].setCompletion = completions;
-    setRoutine(newRoutine)
+    const newRoutine = [...routine];
+    newRoutine[exerciseIndex].completions = completions;
+    newRoutine[exerciseIndex].completion_matrix = completions;
+    setRoutine(newRoutine);
   }
 
   return (
