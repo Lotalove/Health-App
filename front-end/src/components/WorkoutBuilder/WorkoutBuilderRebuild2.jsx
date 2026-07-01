@@ -2,19 +2,23 @@ import { useEffect, useState,useContext } from "react";
 
 import styles from './workout_builder.module.css'
 
-import { StrengthExerciseCard} from "./ExerciseCard";
+import {ExerciseCard} from "./ExerciseCard";
 import {GenWorkoutMenu} from "./WorkoutGenerationMenu";
+import {ExerciseForm} from "./ExerciseForm";
 
 import {search,searchByID} from '../../utils/json-search'
 import { SearchMenu } from "./SearchMenu";
 import RoutineContext from '../../context/RoutineProvider'
 import useAuth from '../../hooks/useAuth'
+import { getCardioType, isCardio } from "../../utils/getExerciseType";
 
 export function WorkoutBuilder({routineSchema,close,date,updateMessage}){
     const [routine,setRoutine] = useState([])
     const [isGenerating,setGenerating] = useState(false)    
     const [isAdding,setAdding] = useState(false)
-    const [updated,setUpdated] = useState(false)
+
+    const [editing,setEditing] = useState(false)
+    const [selectedExercise, selectExercise] = useState(null)
 
     const { auth } = useAuth();
     const {createRoutine,updateRoutine,deleteRoutine} = useContext(RoutineContext)
@@ -26,6 +30,7 @@ export function WorkoutBuilder({routineSchema,close,date,updateMessage}){
         var convertedRoutine = routineSchema.exercises.map((exerciseId,index) =>{
             var exerciseObj = searchByID(exerciseId)
             exerciseObj['reps'] =routineSchema.reps[index]
+            exerciseObj['weights'] =routineSchema.weight_matrix?.[index]?routineSchema.weight_matrix[index]:null
             return exerciseObj
         })
         
@@ -37,7 +42,6 @@ export function WorkoutBuilder({routineSchema,close,date,updateMessage}){
 
 
     async function save(){
-        if (!updated)return
 
         var isNew = routineSchema == null;
         
@@ -53,10 +57,14 @@ export function WorkoutBuilder({routineSchema,close,date,updateMessage}){
         var reps = routine.map((exercise)=>{
             return exercise.reps
         })
-        var newRoutine = {date,exercises:exercises,reps:reps,weight_matrix:null,completion_matrix:null,user_id:auth.user.id}
+        var weight = routine.map((exercise)=>{
+            return exercise.weights
+        })
+        var newRoutine = {date,exercises:exercises,reps:reps,weight_matrix:weight,completion_matrix:null,user_id:auth.user.id}
         
 
         if(!isNew){
+        console.log('updating routine: ', routine)
         await updateRoutine(newRoutine,routineSchema.id) 
         return
         }
@@ -70,21 +78,29 @@ export function WorkoutBuilder({routineSchema,close,date,updateMessage}){
 
     function addExercise(exerciseInfo){
         setRoutine([...routine, exerciseInfo])
-        setUpdated(true)
     }
     
     function removeExercise(idx){
         setRoutine(routine.filter((_, i) => i !== idx))
-        setUpdated(true)
+
     }
 
     function updateSets(exerIDX,reps){
         var newRoutine = [...routine]
-        newRoutine[exerIDX].reps =reps
+        newRoutine[exerIDX].reps = reps
         setRoutine(newRoutine)
-        setUpdated(true)
+
+    }
+    function updateWeights(exerIDX,weights){
+        var newRoutine = [...routine]
+        newRoutine[exerIDX].weights =weights
+        setRoutine(newRoutine)
+       
     }
 
+    function updateCompletions(idx,completions){
+        // this is a dummy function to prevent errors is exercise table component.
+    }
 
     return(
         <div className={styles.workout_builder}> 
@@ -109,6 +125,19 @@ export function WorkoutBuilder({routineSchema,close,date,updateMessage}){
         />
         :null}
 
+        {editing?
+        <ExerciseForm 
+        exerciseInfo = {routine[selectedExercise]}
+        exIndex = {selectedExercise}
+        removeExercise={removeExercise}
+        updateReps = {updateSets}
+        updateWeight = {updateWeights}
+        updateCompletions = {updateCompletions}
+        save = {save}
+        close = {()=>{setEditing(false)}}
+        origin = "builder"
+         />:null}
+
         <div id={styles.header_right}>
 
         <button
@@ -129,13 +158,16 @@ export function WorkoutBuilder({routineSchema,close,date,updateMessage}){
         </div>
         <div className={styles.exercise_list}>
         {routine?.length > 0 ? routine.map((exercise,idx)=>{
-           return <StrengthExerciseCard 
-            exerciseInfo={exercise}
-            index= {idx}
-            addExercise={null}
-            removeExercise={removeExercise}
-            updateSet={updateSets}
-            /> 
+           return <ExerciseCard 
+                    exerciseInfo={exercise}
+                    index= {idx}
+                    addExercise={null}
+                    removeExercise={removeExercise}
+                    updateSet={updateSets}
+                    editing = {editing}
+                    setEditing= {setEditing}
+                    selectExercise = {selectExercise}
+                    /> 
         }):null }
       
        </div>

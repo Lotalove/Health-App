@@ -5,12 +5,12 @@ import { TrackerInput } from "./TrackerInput";
 import { TimeDurationInput } from "./TimeDurationInput";
 import trash_icon from "../../media/icons/trash.svg";
 
-export function ExerciseTable({ exercise, exIndex, removeExercise, updateReps, updateWeights, updateCompletions }) {
+export function ExerciseTable({ exercise, exIndex, removeExercise, updateReps, updateWeights, updateCompletions, origin }) {
   const [sets, setSets] = useState(exercise.reps ?? [1]);
   const [weights, setWeights] = useState(exercise.weights ?? new Array(sets.length).fill(null));
   const [completedArr, setCompletedArr] = useState(exercise.completions ?? new Array(sets.length).fill(false));
   const type = getCardioType(exercise);
-
+  
   useEffect(() => {
     const nextSets = exercise.reps ?? [1];
     setSets(nextSets);
@@ -35,9 +35,28 @@ export function ExerciseTable({ exercise, exIndex, removeExercise, updateReps, u
     updateCompletions(exIndex, updatedCompletions);
   }
 
+  function removeSet(idx) {
+    const updatedSets = [...sets];
+    updatedSets.splice(idx, 1);
+
+    const updatedWeights = [...weights];
+    updatedWeights.splice(idx, 1);
+
+    const updatedCompletions = [...completedArr];
+    updatedCompletions.splice(idx, 1);
+
+    setSets(updatedSets);
+    setWeights(updatedWeights);
+    setCompletedArr(updatedCompletions);
+    updateReps(exIndex, updatedSets);
+    updateWeights(exIndex, updatedWeights);
+    updateCompletions(exIndex, updatedCompletions);
+  }
+
   function updateSetWeight(index, weight) {
     const nextWeights = [...weights];
     nextWeights[index] = weight;
+    console.log("updating weight to: ", weight , " lb(s)")
     setWeights(nextWeights);
     updateWeights(exIndex, nextWeights);
   }
@@ -87,36 +106,50 @@ export function ExerciseTable({ exercise, exIndex, removeExercise, updateReps, u
       <div style={{ display: "inline-block", alignSelf: "flex-start", width: "100%" }}>
         <p className={styles.exerciseLabel}>{exercise.name}</p>
         <div className={styles.exerciseSettings}>
-          <img className={styles.card_button} src={trash_icon} alt="Delete exercise" onClick={deleteExercise} />
+          {origin === "tracker" ?<img 
+          className={styles.card_button}
+          src={trash_icon}
+          alt="Delete exercise"
+          onClick={deleteExercise} /> : null}
         </div>
       </div>
       <table>
+        <tbody>
         {type === "distance" ? distTableHeaders : (
           <tr>
-            <th>Sets</th>
-            <th>Reps Completed</th>
+        
+            <th>Reps</th>
             <th>Weight</th>
-            <th>Mark Complete</th>
+            { origin === "tracker"?<th>Mark Complete</th>:null}
+            <th></th>
           </tr>
         )}
         {type === "distance" ? distTableRows : sets.map((reps, index) => (
           <tr key={`set-${index}`}>
-            <td>{index + 1}</td>
+    
             <td>
               <TrackerInput index={index} saved={reps} update={updateRepsValue} />
             </td>
             <td>
               <TrackerInput index={index} saved={weights[index]} update={updateSetWeight} />
             </td>
-            <td>
+            {origin === "tracker"? <td>
               <input
                 type="checkbox"
                 checked={completedArr[index]}
                 onChange={(e) => updateCompletionArr(index, e.target.checked)}
               />
-            </td>
+            </td>:null
+            }
+            <td>
+              <img 
+              className={styles.card_button}
+              src={trash_icon}
+              alt="Delete Set"
+              onClick={()=>{removeSet(index)}} /> </td>
           </tr>
         ))}
+        </tbody>
       </table>
       <div onClick={addSet} className={styles.addExercise}>
         + Add Set

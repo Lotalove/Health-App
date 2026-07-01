@@ -23,6 +23,7 @@ button{
     width: 100%;
     height: 80%;
     flex-direction: column;
+    align-items: center;
     overflow:scroll;
      -webkit-overflow-scrolling: touch;       
 }
@@ -75,26 +76,33 @@ margin-top: 10px;
 }
 .exTable{
     width: 90%;
+    max-width: 900px;
     align-self: center;
-    float: left;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 table{
-    align-self: center;
     width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
     border-spacing: 0; 
-    font-size:large ;
+    font-size: large;
     font-weight: bold;
+    text-align: center;
 }
 th{
     background-color: lightgray;
     border-bottom: thin solid gray;
-    border-right:thin solid gray;
-    column-gap: 0px
+    border-right: thin solid gray;
+    column-gap: 0px;
 }
 td{
-border-bottom: thin solid gray;
-height: fit-content;
-padding: 8px;
+    border-bottom: thin solid gray;
+    height: fit-content;
+    padding: 8px;
+    text-align: center;
 }
 .inputs{width: 64px;}
 .addExercise{

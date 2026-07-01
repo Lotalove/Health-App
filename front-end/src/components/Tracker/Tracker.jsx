@@ -99,7 +99,7 @@ useEffect(() => {
         savedRoutine.completion_matrix?.[index] ?? new Array(exerciseObj.reps?.length ?? 1).fill(false);
 
       exerciseObj.weights = weights;
-      exerciseObj.weight_matrix = weights;
+     
       exerciseObj.completions = completions;
       exerciseObj.completion_matrix = completions;
 
@@ -195,6 +195,7 @@ useEffect(() => {
             updateReps={updateExerciseReps}
             updateWeights={updateExerciseWeights}
             updateCompletions={updateExerciseCompletions}
+            origin = "tracker"
           />
         ))}
       </div>

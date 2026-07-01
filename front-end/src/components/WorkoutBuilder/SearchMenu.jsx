@@ -1,13 +1,15 @@
 import { useState,useRef} from "react";
 import {search,searchByID} from '../../utils/json-search'
-import { StrengthExerciseCard } from "./ExerciseCard";
+import { ExerciseCard } from "./ExerciseCard";
 
 import styles from './searchMenu.module.css'
+import { isCardio } from "../../utils/getExerciseType";
 export function SearchMenu({ close, addExercise }) {
   const search_input = useRef(null);
   const [search_results, setSearchRes] = useState([]);
   const debounceTimeout = useRef(null);
 
+  console.log(search_results)
   function handleSearch() {
     const results = search(search_input.current.value.toLowerCase()) || [];
     const normalized = results.map((result) => ({ ...result, reps: result.reps ?? [1] }));
@@ -42,7 +44,7 @@ export function SearchMenu({ close, addExercise }) {
       <div className={styles.exercise_list}>
         {search_results.length > 0
           ? search_results.map((result, idx) => (
-              <StrengthExerciseCard
+              <ExerciseCard
                 key={result.id ?? idx}
                 exerciseInfo={result}
                 index={idx}

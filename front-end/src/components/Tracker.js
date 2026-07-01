@@ -192,7 +192,15 @@ return(
                     <h4>{ date}</h4>
                 
                 {routine.getList().map((exercise,index)=>{
-                    return <ExerciseTable exIndex = {index} exercise={exercise} name={exercise.name} sets={exercise.reps} updateRoutine = {setRoutine} completion_matrix={exercise.completions}></ExerciseTable>
+                    return <ExerciseTable 
+                            exIndex = {index}
+                            exercise={exercise}
+                            name={exercise.name}
+                            sets={exercise.reps} 
+                            updateRoutine = {setRoutine} 
+                            completion_matrix={exercise.completions}
+                            origin = "tracker"
+                            ></ExerciseTable>
                 })}
             </div>
              {isAdding?<SearchMenu closeMenu={closeSearchMenu}routine={routine} routineRef={routineRef} setRoutine={setRoutine} wasUpdatedRef={wasUpdatedRef}></SearchMenu>:null}
