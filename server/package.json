@@ -2,14 +2,15 @@
   "name": "server",
   "version": "1.0.0",
   "description": "backend of a workout tracking/planning application",
-
+  "license": "ISC",
+  "author": "Vinny R",
+  "type": "commonjs",
+  "main": "app.ts",
   "scripts": {
     "start": "ts-node src/app.ts",
     "dev": "nodemon --watch src --ext ts --exec ts-node src/app.ts",
     "build": "tsc -p tsconfig.json"
   },
-  "author": "Vinny R",
-  "license": "ISC",
   "dependencies": {
     "argon2": "^0.41.1",
     "cookie-parser": "^1.4.7",
@@ -17,13 +18,13 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
+    "nodemon": "^3.1.14",
     "pg": "^8.22.0"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
     "@types/node": "^26.1.1",
     "eslint": "^10.7.0",
-    "nodemon": "^3.1.14",
     "prettier": "^3.9.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"

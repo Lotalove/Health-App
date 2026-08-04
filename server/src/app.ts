@@ -38,9 +38,17 @@ server.get('/routines',auth_controller.requireAuth,(req:Request,res:Response)=>{
 
 })
 
-server.post('/routines',auth_controller.requireAuth,(req:Request,res:Response)=>{
+server.post('/routines/add',auth_controller.requireAuth,(req:Request,res:Response)=>{
+    routineController.addRoutine(req,res)
+})
+
+server.post('/routines/update',auth_controller.requireAuth,(req:Request,res:Response)=>{
     routineController.updateRoutine(req,res)
 })
+server.post('/routines/delete',auth_controller.requireAuth,(req:Request,res:Response)=>{
+    routineController.deleteRoutine(req,res)
+})
+
 
 server.listen(PORT,()=>{
     console.log("Server is up and running!")
