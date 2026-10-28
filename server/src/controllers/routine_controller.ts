@@ -6,7 +6,7 @@ import { AuthenticatedGetRequest,  AuthenticatedPostRequest} from '../models/Aut
 // Define custom interface
 
 
-async function getAllRoutines(req:AuthenticatedGetRequest, res:Response) {
+async function getRoutines(req:AuthenticatedGetRequest, res:Response) {
   try {
 // 1. Guard against missing authentication/user object
     const userId = req.user.id;
@@ -17,6 +17,7 @@ const query = `
   SELECT 
     r.id ,
     r.created_at as date,
+    r.user_id,
     -- Group all distinct exercises inside this routine
     coalesce(
       json_agg(
@@ -51,7 +52,7 @@ const query = `
 
 const result = await pool.query(query, [userId]);
     // Send the query rows back to the client
-    return res.status(200).json(result.rows);
+    return res.status(200).json({"routines":result.rows});
   } catch (error) {
     console.error("Error fetching routines:", error);
     return res.status(500).json({ error: "Internal Server Error" });
@@ -62,6 +63,7 @@ async function addRoutine(req: AuthenticatedPostRequest, res: Response){
   const routine: Routine = req.body as Routine;
   const user = req.user.id;
 
+    if (routine.exercises.length ==0) res.status(400).json({error:"No exercises in this routine"})
     // 1. Checkout a dedicated client connection for the transaction
     const client = await pool.connect();
 
@@ -127,6 +129,7 @@ async function updateRoutine(req: AuthenticatedPostRequest, res: Response) {
     try {
 
       const result = await client.query('Select * from public.routines where id= $1 limit 1',[routine_id])
+
       if (result.rows[0].user_id != user) res.status(403).json({'error':"You dont have permision to update this routine"})
 
       await client.query('BEGIN');
@@ -135,11 +138,11 @@ async function updateRoutine(req: AuthenticatedPostRequest, res: Response) {
 
        // delete all the old exercises from db them save the new ones (prevent need to check what changed)
       await client.query(
-        `Delete from public.routine _exercises where routine_id = $1`,
+        `Delete from public.routine_exercises where routine_id = $1`,
         [routine_id]
       );
       await client.query(
-          `Delete from public.routine_sets  where routine_id = $1`,
+          `Delete from public.routine_sets where routine_id = $1`,
           [routine_id]
         );
 
@@ -179,15 +182,22 @@ async function updateRoutine(req: AuthenticatedPostRequest, res: Response) {
     } finally {
       // Always release the connection back to the pool
       client.release();
+      // Handle existing routine update logic here...
+      return res.status(200).json({ message: 'received req' });
+      
     }
 
-  // Handle existing routine update logic here...
-  return res.status(200).json({ message: 'received req' });
 }
 
 async function deleteRoutine(req: AuthenticatedPostRequest, res: Response){
   const routine_id = req.body.routine_id
+  const user= req.user.id
   try{
+
+    const result = await pool.query('Select * from public.routines where id= $1 limit 1',[routine_id])
+    
+    if (result.rows[0].user_id != user) res.status(403).json({'error':"You dont have permision to delete this routine"})
+    
     // because the routine_id is used as a foreign key in tables holding information about routines so you only need to delete row in public.routines
     await pool.query(`DELETE FROM public.routines where id = $1`,[routine_id])
     res.status(200).json({message:"Routine Deleted"})
@@ -197,4 +207,6 @@ async function deleteRoutine(req: AuthenticatedPostRequest, res: Response){
     res.status(500).json({error:"failed to delete routine"})
   }
 }
-module.exports={getAllRoutines, addRoutine,updateRoutine,deleteRoutine}
+
+module.exports={getRoutines, addRoutine,updateRoutine,deleteRoutine}
+
