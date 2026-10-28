@@ -19,9 +19,9 @@ server.use(cookieParser());
 server.post('/login',(req:Request,res:Response)=>{
     auth_controller.login(req,res)
 })
-// server.post('/logout',(req,res)=>{
-//     logoutController.logout(req,res)
-// })
+server.post('/logout',(req:Request,res:Response)=>{
+    auth_controller.logout(req,res)
+})
 // server.get('/refresh',(req,res)=>{
 //     refreshTokenController.handleRefreshToken(req,res)
 // })
@@ -34,7 +34,7 @@ server.get('/exercises',(req:Request,res:Response)=>{
 })
 
 server.get('/routines',auth_controller.requireAuth,(req:Request,res:Response)=>{
-    routineController.getAllRoutines(req,res)
+    routineController.getRoutines(req,res)
 
 })
 
